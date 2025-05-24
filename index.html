@@ -333,24 +333,94 @@
     function initMap() {
       console.log('بدء تهيئة الخريطة...');
       
-      // تحديد أيقونات الـ pins حسب الحالة (بعد تحميل Google Maps API)
- const pinIcons = {
-  active: {
-    url: './activee.svg',
-    scaledSize: new google.maps.Size(50, 60),
-    anchor: new google.maps.Point(25, 60)
-  },
-  launching: {
-    url: './pin.svg', 
-    scaledSize: new google.maps.Size(50, 60),
-    anchor: new google.maps.Point(25, 60)
-  },
-  planned: {
-    url: './planned.svg',
-    scaledSize: new google.maps.Size(50, 60), 
-    anchor: new google.maps.Point(25, 60)
-  }
-};
+      // تحديد أيقونات الـ pins الجديدة بالتصميم المطور
+      const pinIcons = {
+        active: {
+          url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+            <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="greenGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" style="stop-color:#34d399;stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:#22c55e;stop-opacity:1" />
+                </linearGradient>
+              </defs>
+              <ellipse cx="50" cy="115" rx="15" ry="5" fill="#00000020"/>
+              <path d="M50 10 C30 10, 15 25, 15 45 C15 65, 50 100, 50 100 S85 65, 85 45 C85 25, 70 10, 50 10 Z" 
+                    fill="url(#greenGradient)" stroke="#16a34a" stroke-width="2"/>
+              <circle cx="50" cy="45" r="25" fill="#f8fbfd" stroke="#22c55e" stroke-width="2"/>
+              <g transform="translate(50, 45)">
+                <rect x="-12" y="-8" width="24" height="16" fill="#22c55e" rx="2"/>
+                <rect x="-3" y="-2" width="6" height="8" fill="#f8fbfd" rx="1"/>
+                <rect x="-10" y="-6" width="4" height="4" fill="#f8fbfd" rx="0.5"/>
+                <rect x="6" y="-6" width="4" height="4" fill="#f8fbfd" rx="0.5"/>
+                <polygon points="-14,-8 0,-15 14,-8" fill="#16a34a"/>
+                <circle cx="2" cy="2" r="0.8" fill="#22c55e"/>
+              </g>
+              <circle cx="50" cy="45" r="3" fill="#7ebfe9"/>
+              <ellipse cx="42" cy="35" rx="8" ry="12" fill="#ffffff40"/>
+            </svg>
+          `),
+          scaledSize: new google.maps.Size(50, 60),
+          anchor: new google.maps.Point(25, 60)
+        },
+        launching: {
+          url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+            <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" style="stop-color:#f4a568;stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:#ea9c57;stop-opacity:1" />
+                </linearGradient>
+              </defs>
+              <ellipse cx="50" cy="115" rx="15" ry="5" fill="#00000020"/>
+              <path d="M50 10 C30 10, 15 25, 15 45 C15 65, 50 100, 50 100 S85 65, 85 45 C85 25, 70 10, 50 10 Z" 
+                    fill="url(#orangeGradient)" stroke="#d18a46" stroke-width="2"/>
+              <circle cx="50" cy="45" r="25" fill="#f8fbfd" stroke="#ea9c57" stroke-width="2"/>
+              <g transform="translate(50, 45)">
+                <rect x="-12" y="-8" width="24" height="16" fill="#ea9c57" rx="2"/>
+                <rect x="-3" y="-2" width="6" height="8" fill="#f8fbfd" rx="1"/>
+                <rect x="-10" y="-6" width="4" height="4" fill="#f8fbfd" rx="0.5"/>
+                <rect x="6" y="-6" width="4" height="4" fill="#f8fbfd" rx="0.5"/>
+                <polygon points="-14,-8 0,-15 14,-8" fill="#d18a46"/>
+                <circle cx="2" cy="2" r="0.8" fill="#ea9c57"/>
+              </g>
+              <circle cx="50" cy="45" r="3" fill="#7ebfe9"/>
+              <ellipse cx="42" cy="35" rx="8" ry="12" fill="#ffffff40"/>
+            </svg>
+          `),
+          scaledSize: new google.maps.Size(50, 60),
+          anchor: new google.maps.Point(25, 60)
+        },
+        planned: {
+          url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+            <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="purpleGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" style="stop-color:#c4b5fd;stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:#a78bfa;stop-opacity:1" />
+                </linearGradient>
+              </defs>
+              <ellipse cx="50" cy="115" rx="15" ry="5" fill="#00000020"/>
+              <path d="M50 10 C30 10, 15 25, 15 45 C15 65, 50 100, 50 100 S85 65, 85 45 C85 25, 70 10, 50 10 Z" 
+                    fill="url(#purpleGradient)" stroke="#8b5cf6" stroke-width="2"/>
+              <circle cx="50" cy="45" r="25" fill="#f8fbfd" stroke="#a78bfa" stroke-width="2"/>
+              <g transform="translate(50, 45)">
+                <rect x="-12" y="-8" width="24" height="16" fill="#a78bfa" rx="2"/>
+                <rect x="-3" y="-2" width="6" height="8" fill="#f8fbfd" rx="1"/>
+                <rect x="-10" y="-6" width="4" height="4" fill="#f8fbfd" rx="0.5"/>
+                <rect x="6" y="-6" width="4" height="4" fill="#f8fbfd" rx="0.5"/>
+                <polygon points="-14,-8 0,-15 14,-8" fill="#8b5cf6"/>
+                <circle cx="2" cy="2" r="0.8" fill="#a78bfa"/>
+              </g>
+              <circle cx="50" cy="45" r="3" fill="#7ebfe9"/>
+              <ellipse cx="42" cy="35" rx="8" ry="12" fill="#ffffff40"/>
+            </svg>
+          `),
+          scaledSize: new google.maps.Size(50, 60),
+          anchor: new google.maps.Point(25, 60)
+        }
+      };
+      
       const mapCenter = { lat: 24.0000, lng: 45.0000 };
       map = new google.maps.Map(document.getElementById('map'), {
         zoom: 6,
@@ -358,8 +428,8 @@
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         restriction: {
           latLngBounds: {
-            north: 50.0,
-            south: 11.5,
+            north: 32.0,
+            south: 16.5,
             west: 36.5,
             east: 50.5
           },
@@ -387,12 +457,20 @@
           position: { lat: location.lat, lng: location.lng },
           map: map,
           icon: icon,
-          title: location.name
+          title: location.name,
+          clickable: true,
+          optimized: false
         });
 
-        marker.addListener('click', () => {
+        // إضافة event listener للنقر
+        marker.addListener('click', function() {
           console.log('تم النقر على:', location.name);
-          showSidebar(location);
+          try {
+            showSidebar(location);
+            console.log('تم فتح الـ sidebar بنجاح');
+          } catch (error) {
+            console.error('خطأ في فتح الـ sidebar:', error);
+          }
         });
 
         markers.push(marker);
@@ -471,112 +549,151 @@
     }
 
     function showSidebar(location) {
-      const statusInfo = getStatusInfo(location.status, location);
+      console.log('بدء فتح sidebar للموقع:', location.name);
       
-      document.getElementById('location-name').textContent = location.name;
-      document.getElementById('location-details').textContent = location.name;
-      
-      // إظهار شارة الحالة
-      const statusBadge = document.getElementById('status-badge');
-      statusBadge.textContent = statusInfo.text;
-      statusBadge.className = 'status-badge ' + statusInfo.class;
-      
-      // إظهار الإحصائيات
-      const statsContainer = document.getElementById('stats-container');
-      if (location.status === 'active') {
-        statsContainer.innerHTML = `
-          <h4 style="margin: 0 0 10px 0; color: #2c3e50;">📊 إحصائيات المنصة</h4>
-          <div class="stat-item">
-            <span>عدد المتاجر:</span>
-            <strong>${location.storesCount || 0} متجر</strong>
-          </div>
-          <div class="stat-item">
-            <span>عدد العروض:</span>
-            <strong>${location.offersCount || 0} عرض</strong>
-          </div>
-          <div class="stat-item">
-            <span>الحالة:</span>
-            <strong style="color: #22c55e;">متاحة الآن ✓</strong>
-          </div>
-        `;
-      } else if (location.status === 'launching') {
-        statsContainer.innerHTML = `
-          <h4 style="margin: 0 0 10px 0; color: #2c3e50;">🚧 حالة الإطلاق</h4>
-          <div class="stat-item">
-            <span>التقدم:</span>
-            <strong>${location.launchProgress || 0}%</strong>
-          </div>
-          <div class="stat-item">
-            <span>الحالة:</span>
-            <strong style="color: #ea9c57;">جاري العمل عليها</strong>
-          </div>
-          <p style="margin: 10px 0; color: #666; font-size: 14px;">
-            نعمل بجد لإطلاق هذه المنصة قريباً. سنبلغك فور توفرها!
-          </p>
-        `;
-      } else {
-        statsContainer.innerHTML = `
-          <h4 style="margin: 0 0 10px 0; color: #2c3e50;">📅 مخطط للمستقبل</h4>
-          <div class="stat-item">
-            <span>الإطلاق المتوقع:</span>
-            <strong>${location.plannedLaunch || 'قريباً'}</strong>
-          </div>
-          <div class="stat-item">
-            <span>الحالة:</span>
-            <strong style="color: #a78bfa;">قيد التخطيط</strong>
-          </div>
-          <p style="margin: 10px 0; color: #666; font-size: 14px;">
-            هذه المنصة مخططة للإطلاق قريباً. اشترك للحصول على إشعار عند الإطلاق!
-          </p>
-        `;
-      }
-      
-      // إظهار رابط الزيارة أو إخفاؤه
-      const locationLink = document.getElementById('location-link');
-      if (location.link && location.status === 'active') {
-        locationLink.href = location.link;
-        locationLink.style.display = 'inline-block';
-        locationLink.textContent = 'زيارة المنصة الآن';
-      } else {
-        locationLink.style.display = 'none';
-      }
-      
-      // إظهار الصورة
-      const locationImage = document.getElementById('location-image');
-      if (location.image) {
-        locationImage.src = location.image;
-        locationImage.style.display = 'block';
-      } else {
-        locationImage.style.display = 'none';
-      }
+      try {
+        const statusInfo = getStatusInfo(location.status, location);
+        
+        // تعديل اسم الموقع
+        const locationNameElement = document.getElementById('location-name');
+        if (locationNameElement) {
+          locationNameElement.textContent = location.name;
+          console.log('تم تعديل اسم الموقع');
+        }
+        
+        const locationDetailsElement = document.getElementById('location-details');
+        if (locationDetailsElement) {
+          locationDetailsElement.textContent = location.name;
+        }
+        
+        // إظهار شارة الحالة
+        const statusBadge = document.getElementById('status-badge');
+        if (statusBadge) {
+          statusBadge.textContent = statusInfo.text;
+          statusBadge.className = 'status-badge ' + statusInfo.class;
+          console.log('تم تعديل شارة الحالة');
+        }
+        
+        // إظهار الإحصائيات
+        const statsContainer = document.getElementById('stats-container');
+        if (statsContainer) {
+          if (location.status === 'active') {
+            statsContainer.innerHTML = `
+              <h4 style="margin: 0 0 10px 0; color: #2c3e50;">📊 إحصائيات المنصة</h4>
+              <div class="stat-item">
+                <span>عدد المتاجر:</span>
+                <strong>${location.storesCount || 0} متجر</strong>
+              </div>
+              <div class="stat-item">
+                <span>عدد العروض:</span>
+                <strong>${location.offersCount || 0} عرض</strong>
+              </div>
+              <div class="stat-item">
+                <span>الحالة:</span>
+                <strong style="color: #22c55e;">متاحة الآن ✓</strong>
+              </div>
+            `;
+          } else if (location.status === 'launching') {
+            statsContainer.innerHTML = `
+              <h4 style="margin: 0 0 10px 0; color: #2c3e50;">🚧 حالة الإطلاق</h4>
+              <div class="stat-item">
+                <span>التقدم:</span>
+                <strong>${location.launchProgress || 0}%</strong>
+              </div>
+              <div class="stat-item">
+                <span>الحالة:</span>
+                <strong style="color: #ea9c57;">جاري العمل عليها</strong>
+              </div>
+              <p style="margin: 10px 0; color: #666; font-size: 14px;">
+                نعمل بجد لإطلاق هذه المنصة قريباً. سنبلغك فور توفرها!
+              </p>
+            `;
+          } else {
+            statsContainer.innerHTML = `
+              <h4 style="margin: 0 0 10px 0; color: #2c3e50;">📅 مخطط للمستقبل</h4>
+              <div class="stat-item">
+                <span>الإطلاق المتوقع:</span>
+                <strong>${location.plannedLaunch || 'قريباً'}</strong>
+              </div>
+              <div class="stat-item">
+                <span>الحالة:</span>
+                <strong style="color: #a78bfa;">قيد التخطيط</strong>
+              </div>
+              <p style="margin: 10px 0; color: #666; font-size: 14px;">
+                هذه المنصة مخططة للإطلاق قريباً. اشترك للحصول على إشعار عند الإطلاق!
+              </p>
+            `;
+          }
+          console.log('تم تعديل الإحصائيات');
+        }
+        
+        // إظهار رابط الزيارة أو إخفاؤه
+        const locationLink = document.getElementById('location-link');
+        if (locationLink) {
+          if (location.link && location.status === 'active') {
+            locationLink.href = location.link;
+            locationLink.style.display = 'inline-block';
+            locationLink.textContent = 'زيارة المنصة الآن';
+          } else {
+            locationLink.style.display = 'none';
+          }
+        }
+        
+        // إظهار الصورة
+        const locationImage = document.getElementById('location-image');
+        if (locationImage) {
+          if (location.image) {
+            locationImage.src = location.image;
+            locationImage.style.display = 'block';
+          } else {
+            locationImage.style.display = 'none';
+          }
+        }
 
-      // إنشاء رسالة مشاركة واتساب
-      let shareMessage = `🏪 اكتشف موقع: ${location.name}\n`;
-      shareMessage += `📍 الحالة: ${statusInfo.text}\n`;
-      
-      if (location.status === 'active' && location.link) {
-        shareMessage += `🔗 زيارة المنصة: ${location.link}\n`;
-        shareMessage += `🏬 المتاجر: ${location.storesCount || 0}\n`;
-        shareMessage += `🎯 العروض: ${location.offersCount || 0}\n`;
-      } else if (location.status === 'launching') {
-        shareMessage += `⏳ التقدم: ${location.launchProgress || 0}%\n`;
-      } else {
-        shareMessage += `📅 الإطلاق المتوقع: ${location.plannedLaunch || 'قريباً'}\n`;
+        // إنشاء رسالة مشاركة واتساب
+        let shareMessage = `🏪 اكتشف موقع: ${location.name}\n`;
+        shareMessage += `📍 الحالة: ${statusInfo.text}\n`;
+        
+        if (location.status === 'active' && location.link) {
+          shareMessage += `🔗 زيارة المنصة: ${location.link}\n`;
+          shareMessage += `🏬 المتاجر: ${location.storesCount || 0}\n`;
+          shareMessage += `🎯 العروض: ${location.offersCount || 0}\n`;
+        } else if (location.status === 'launching') {
+          shareMessage += `⏳ التقدم: ${location.launchProgress || 0}%\n`;
+        } else {
+          shareMessage += `📅 الإطلاق المتوقع: ${location.plannedLaunch || 'قريباً'}\n`;
+        }
+        
+        shareMessage += `\n📱 تابع جميع منصات متاجر الحي على خريطتنا التفاعلية!`;
+        
+        const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareMessage)}`;
+        
+        // تحديث زر الواتساب
+        const whatsappButton = document.getElementById('whatsapp-share-sidebar');
+        if (whatsappButton) {
+          whatsappButton.href = whatsappUrl;
+        }
+
+        // إظهار الشريط الجانبي
+        const sidebar = document.getElementById('sidebar');
+        const mapElement = document.getElementById('map');
+        
+        if (sidebar && mapElement) {
+          sidebar.style.display = 'block';
+          mapElement.style.width = '70%';
+          console.log('تم إظهار الـ sidebar وتغيير عرض الخريطة');
+          
+          // إعادة تحديد حجم الخريطة
+          setTimeout(() => {
+            google.maps.event.trigger(map, 'resize');
+            console.log('تم إعادة تحديد حجم الخريطة');
+          }, 100);
+        }
+        
+      } catch (error) {
+        console.error('خطأ في دالة showSidebar:', error);
+        alert('حدث خطأ في عرض معلومات الموقع');
       }
-      
-      shareMessage += `\n📱 تابع جميع منصات متاجر الحي على خريطتنا التفاعلية!`;
-      
-      const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareMessage)}`;
-      
-      // تحديث أزرار الواتساب
-      document.getElementById('share-btn-sidebar').href = whatsappUrl;
-      document.getElementById('whatsapp-share-sidebar').href = whatsappUrl;
-
-      // إظهار الشريط الجانبي
-      document.getElementById('sidebar').style.display = 'block';
-      document.getElementById('map').style.width = '70%';
-
-      google.maps.event.trigger(map, 'resize');
     }
 
     // أحداث الواجهة
