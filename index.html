@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>Neighborhood Map</title>
+  <title>خريطة متاجر الحي</title>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSQwC16g8ZKoyVC2EpixPr0e-7IcPII14&libraries=places&callback=initMap" async defer></script>
   <style>
     body {
-      font-family: 'Your Website Font', sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      direction: rtl;
     }
     #map {
       height: 100vh;
@@ -17,88 +20,158 @@
       height: 100%;
       width: 30%;
       position: fixed;
-      right: 0;
+      left: 0;
       top: 0;
       background-color: #f8f9fa;
-      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
       padding: 20px;
       display: none;
       z-index: 1000;
       transition: transform 0.3s ease;
+      overflow-y: auto;
     }
-    .share {
+    .controls {
       display: flex;
       justify-content: space-between;
       margin-bottom: 10px;
       position: absolute;
-      top: 32px;
-      left: 10px;
+      top: 20px;
+      right: 20px;
+      z-index: 999;
+      gap: 10px;
     }
     #sidebar h3 {
       margin-top: 0;
+      color: #ea9c57;
     }
     #close-sidebar {
       position: absolute;
       top: 10px;
-      right: 10px;
+      left: 10px;
       background-color: #d9534f;
       color: white;
       border: none;
-      padding: 5px 10px;
+      padding: 8px 12px;
       cursor: pointer;
       border-radius: 5px;
+      font-weight: bold;
     }
     #search-input {
-      width: 300px;
-      height: 30px;
-      margin-right: 10px;
-      padding: 5px;
-      font-size: 16px;
-      margin-top: 35px;
-      background-color: #f8f9fa;
-      z-index: 999999999999999999999;
+      width: 250px;
+      height: 40px;
+      padding: 8px 12px;
+      font-size: 14px;
+      background-color: white;
+      border: 2px solid #ea9c57;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     #search-button {
-      padding: 5px 10px;
-      font-size: 16px;
-      margin-top: 35px;
+      padding: 8px 16px;
+      font-size: 14px;
       cursor: pointer;
+      background-color: #ea9c57;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    #search-button:hover {
+      background-color: #d97706;
     }
     .whatsapp-share-btn {
       display: inline-block;
       background-color: #25D366;
       color: white;
-      padding: 13px 15px;
-      font-size: 16px;
+      padding: 8px 16px;
+      font-size: 14px;
       text-decoration: none;
-      border-radius: 5px;
-      margin-top: 35px;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: background-color 0.3s;
     }
     .whatsapp-share-btn:hover {
       background-color: #20b858;
     }
+    
+    .whatsapp-sidebar-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #25D366;
+      color: white;
+      padding: 12px 20px;
+      font-size: 16px;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-top: 20px;
+      transition: background-color 0.3s ease;
+      font-weight: bold;
+    }
+    
+    .whatsapp-sidebar-btn:hover {
+      background-color: #20b858;
+      color: white;
+      text-decoration: none;
+    }
+    
+    .whatsapp-icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 10px;
+      fill: currentColor;
+    }
+    
     .info-header {
-      font-size: 25px;
-      margin-bottom: 10px;
+      font-size: 24px;
+      margin-bottom: 15px;
+      color: #2c3e50;
     }
     .info-content {
-      font-size: 17px;
-      padding: 10px;
+      font-size: 16px;
+      padding: 10px 0;
+      line-height: 1.6;
     }
-    .whatsapp-share-btn {
-      z-index: 99999;
-      margin-left: 50px;
+    
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 10px;
     }
-    @media (max-width: 545px) {
-      .share {
-        display: flex;
-        flex-direction: column;
-        width: fit-content;
-      }
-      .whatsapp-share-btn {
-        margin: 10px 0px 0px px;
-      }
+    
+    .status-active {
+      background-color: #22c55e;
+      color: white;
     }
+    
+    .status-launching {
+      background-color: #ea9c57;
+      color: white;
+    }
+    
+    .status-planned {
+      background-color: #a78bfa;
+      color: white;
+    }
+    
+    .store-stats {
+      background-color: #f0f8ff;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+      border-right: 4px solid #ea9c57;
+    }
+    
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    
     @media (max-width: 768px) {
       #sidebar {
         width: 100%;
@@ -106,261 +179,235 @@
       #map {
         height: 60vh;
       }
-      .whatsapp-share-btn {
-        font-size: 14px;
+      .controls {
+        flex-direction: column;
+        position: relative;
+        top: 10px;
+        right: 10px;
+        background: rgba(255,255,255,0.9);
+        padding: 10px;
+        border-radius: 8px;
+        width: fit-content;
+      }
+      #search-input {
+        width: 200px;
+        margin-bottom: 10px;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Search input and WhatsApp button container -->
-  <div id="controls" class="share">
-    <input id="search-input" type="text" placeholder="Search " />
-    <button id="search-button">Search</button>
-    <a id="share-btn-sidebar" href="#" target="_blank" class="whatsapp-share-btn">Share on WhatsApp</a>
+  <!-- أدوات التحكم -->
+  <div class="controls">
+    <input id="search-input" type="text" placeholder="ابحث عن حي..." />
+    <button id="search-button">بحث</button>
+    <a id="share-btn-sidebar" href="#" target="_blank" class="whatsapp-share-btn">شارك عبر واتساب</a>
   </div>
 
-  <!-- Div to display the map -->
+  <!-- الخريطة -->
   <div id="map"></div>
 
-  <!-- Sidebar to show location details -->
+  <!-- الشريط الجانبي -->
   <div id="sidebar">
-    <button id="close-sidebar">X</button>
+    <button id="close-sidebar">✕</button>
     <h3 id="location-name" class="info-header"></h3>
+    <div id="status-badge" class="status-badge"></div>
+    
     <div class="info-content">
-      <p><strong>Location:</strong> <span id="location-details"></span></p>
-      <a id="location-link" href="#" target="_blank">Visit website</a>
+      <div class="store-stats" id="stats-container">
+        <!-- الإحصائيات ستظهر هنا -->
+      </div>
+      
+      <p><strong>الموقع:</strong> <span id="location-details"></span></p>
+      <a id="location-link" href="#" target="_blank" style="color: #ea9c57; font-weight: bold;">زيارة المنصة</a>
       <br><br>
-      <img id="location-image" src="" alt="Location image" style="width:100%; height:auto;">
+      <img id="location-image" src="" alt="صورة الموقع" style="width:100%; height:auto; border-radius: 8px;">
+      
+      <!-- زر مشاركة واتساب -->
+      <a id="whatsapp-share-sidebar" href="#" target="_blank" class="whatsapp-sidebar-btn">
+        <svg class="whatsapp-icon" viewBox="0 0 24 24">
+          <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824z"/>
+        </svg>
+        مشاركة عبر الواتساب
+      </a>
     </div>
   </div>
 
   <script>
     let map, highlightCircle;
     let markers = [];
+
     const locations = [
-      { lat: 21.2854, lng: 39.2376, name: 'حي السنابل - جدة', link: 'https://jed1.matajeralhai.com/', image: 'https://jed1.matajeralhai.com/Images/Photos/63f719b49e404dbb9a7217ded02fef23.webp' },
-      { lat: 21.2854, lng: 39.2376, name: 'حي الأجاويد - جدة', link: 'https://jed1.matajeralhai.com/', image: '' },
-      { lat: 21.3000, lng: 39.2400, name: 'حي الهدي - جدة', link: 'https://jed1.matajeralhai.com/', icon: '', image: '' },
-    { lat: 21.2960, lng: 39.2350, name: 'حي الأمير عبد المجيد - جدة', link: 'https://jed1.matajeralhai.com/', icon: '', image: '' },
-    { lat: 21.2800, lng: 39.2150, name: 'حي العدل - جدة', link: 'https://jed1.matajeralhai.com/', icon: '', image: '' },
-    { lat: 21.2500, lng: 39.1800, name: 'حي الأمير فواز - جدة', link: 'https://jed1.matajeralhai.com/', icon: '', image: '' },
-    { lat: 21.3000, lng: 39.2300, name: 'حي الجوهرة - جدة', link: 'https://jed1.matajeralhai.com/', icon: '', image: '' },
-    { lat: 21.2800, lng: 39.1850, name: 'حي الشفا - جدة', link: 'https://jed1.matajeralhai.com/', icon: '', image: '' },
-
-
-
-      { lat: 21.5433, lng: 39.1728, name: 'حي الرياض - جدة', link: 'https://jed6.matajeralhai.com/', icon: '', image: '' },
-      { lat: 21.5433, lng: 39.1728, name: 'حي طيبة - جدة', link: 'https://jed6.matajeralhai.com/', icon: '', image: '' },
-      { lat: 21.6682, lng: 39.1091, name: 'حي أبحر - جدة', link: 'https://jed6.matajeralhai.com/', icon: '', image: '' },
-
-
-
-      { lat: 21.5454, lng: 39.2049, name: 'حي الحمدانية - جدة', link: 'https://jed4.matajeralhai.com/', icon: '', image: '' },
-      { lat: 21.51, lng: 39.27, name: 'حي البشائر - جدة', link: 'https://jed4.matajeralhai.com/', icon: '', image: '' },
-    { lat: 21.52, lng: 39.28, name: 'حي الرحمانية - جدة', link: 'https://jed4.matajeralhai.com/', icon: '', image: '' },
-    { lat: 21.53, lng: 39.29, name: 'حي الكوثر - جدة', link: 'https://jed4.matajeralhai.com/', icon: '', image: '' },
-    { lat: 21.54, lng: 39.30, name: 'حي الريان - جدة', link: 'https://jed4.matajeralhai.com/', icon: '', image: '' },
-    { lat: 21.55, lng: 39.31, name: 'حي الصالحية - جدة', link: 'https://jed4.matajeralhai.com/', icon: '', image: '' },
-    { lat: 21.57, lng: 39.33, name: 'حي الفلاح - جدة', link: 'https://jed4.matajeralhai.com/', icon: '', image: '' },
-
-
-      { lat: 21.5027, lng: 39.2433, name: 'حي الفضيلة - جدة', link: 'https://jed5.matajeralhai.com/', icon: '', image: '' },
-      { lat: 21.4354, lng: 39.3705, name: 'حي القرينية - جدة', link: 'https://jed5.matajeralhai.com/', icon: '', image: '' },
-      { lat: 21.4822, lng: 39.2224, name: 'الخمرة - جدة', link: 'https://jed5.matajeralhai.com/', icon: '', image: '' },
-
-
-      { lat: 21.5752, lng: 39.2125, name: 'حي السامر - جدة', link: 'https://jed2.matajeralhai.com/', icon: '', image: '' },
-
-
-      { lat: 25.7605, lng: 45.3943, name: 'حي تمير - الرياض', link: 'https://rydh5.matajeralhai.com/', icon: '', image: '' },
-      { lat: 21.3870, lng: 39.9850, name: ' حي الخالدية', link: 'https://rydh5.matajeralhai.com/', icon: '', image: ''  },
-      { lat: 24.7240, lng: 46.6630, name: 'حي العزيزية - الرياض', link: 'https://rydh5.matajeralhai.com/', icon: '', image: '' },
-
-
-
-
-      { lat: 21.6319, lng: 39.1225, name: 'حي النعيم - جدة', link: 'https://jed10.matajeralhai.com/', icon: '', image: '' },
-      { lat: 21.6159, lng: 39.1277, name: 'حي المحمدية - جدة', link: 'https://jed10.matajeralhai.com/', icon: '', image: '' },
-      { lat: 21.6261, lng: 39.1425, name: 'حي المرجان - جدة', link: 'https://jed10.matajeralhai.com/', icon: '', image: '' },
-      { lat: 21.6195, lng: 39.1480, name: 'حي البساتين - جدة', link: 'https://jed10.matajeralhai.com/', icon: '', image: '' },
-
-
-
-      { lat: 24.7402, lng: 46.6520, name: 'حي الغدير - الرياض', link: 'https://rydh1.matajeralhai.com/', icon: '', image: '' },
-      { lat: 24.7889, lng: 46.7223, name: 'حي الفلاح - الرياض', link: 'https://rydh2.matajeralhai.com/', icon: '', image: '' },
-      { lat: 24.7688, lng: 46.7111, name: 'حي الوادي - الرياض', link: 'https://rydh3.matajeralhai.com/', icon: '', image: '' },
-      { lat: 24.7725, lng: 46.7087, name: 'حي النفل - الرياض', link: 'https://rydh4.matajeralhai.com/', icon: '', image: '' },
-
-
-
-      { lat: 21.5892, lng: 39.1979, name: 'حي الصفا - جدة', link: 'https://jed3.matajeralhai.com/', icon: '', image: '' },
-
-
-      { lat: 21.3891, lng: 39.8579, name: 'حي الزايدي - مكة', link: 'https://mak2.matajeralhai.com/', icon: '', image: '' },
-
-
-      { lat: 21.4243, lng: 39.8259, name: 'حي التنعيم - مكة', link: 'https://mak1.matajeralhai.com/', icon: '', image: '' },
-
-
-      { lat: 21.4878, lng: 39.1843, name: 'باب مكة - جدة', link: 'https://jed8.matajeralhai.com/', icon: '', image: '' },
-
-      { lat: 25.5951, lng: 45.6338, name: 'حي سدير - الرياض', link: 'https://rydh6.matajeralhai.com/mainPage', icon: '', image: '' },
-      { lat: 24.7642, lng: 46.6882, name: 'حي الوسطي - الرياض', link: 'https://rydh6.matajeralhai.com/mainPage', icon: '', image: '' },
-      { lat: 24.7350, lng: 46.6670, name: 'حي القادسية - الرياض', link: 'https://rydh6.matajeralhai.com/mainPage', icon: '', image: '' },
-      { lat: 24.7416, lng: 46.6850, name: ' حي الزهرة - الرياض', link: 'https://rydh6.matajeralhai.com/mainPage', icon: '', image: '' },
-      { lat: 24.7574, lng: 46.6951, name: 'حي الروضة - الرياض', link: 'https://rydh6.matajeralhai.com/mainPage', icon: '', image: '' },
-      { lat: 24.7240, lng: 46.6630, name: 'حي العزيزية - الرياض', link: 'https://rydh6.matajeralhai.com/mainPage', icon: '', image: '' },
-      { lat: 24.7000, lng: 39.6000, name: 'حي النهضة - الرياض', link: 'https://rydh6.matajeralhai.com/mainPage', icon: '', image: ''  },
-
-
-{ lat: 25.5902, lng: 45.3012, name: 'المجمعة', link: 'https://rydh7.matajeralhai.com/mainPage', icon: '', image: '' },
-{ lat: 24.7060, lng: 46.6770, name: 'حي الملك سلمان - المجمعة', link: 'https://rydh7.matajeralhai.com/mainPage', icon: '', image: '' },
-{ lat: 24.7130, lng: 46.7040, name: 'حى المطار - المجمعة', link: 'https://rydh7.matajeralhai.com/mainPage', icon: '', image: '' },
-{ lat: 24.7240, lng: 46.6760, name: 'حي الملك عبدالله- المجمعة', link: 'https://rydh7.matajeralhai.com/mainPage', icon: '', image: '' },
-{ lat: 24.7160, lng: 46.6850, name: 'حي الفيحاء - المجمعة', link: 'https://rydh7.matajeralhai.com/mainPage', icon: '', image: '' },
-{ lat: 24.7260, lng: 46.6630, name: ' حي اليرموك - المجمعة', link: 'https://rydh7.matajeralhai.com/mainPage', icon: '', image: '' },
-{ lat: 24.7220, lng: 46.6750, name: 'حي الملك فهد - المجمعة', link: 'https://rydh7.matajeralhai.com/mainPage', icon: '', image: '' },
-
-
-{ lat: 21.6011, lng: 39.1802, name: 'النسيم والسليمانية - جدة', link: '', icon: '', image: '' },
-
-
-
-{ lat: 24.7330, lng: 46.6970, name: 'حي الحاوية - الباحة', link: '', icon: '', image: '' },
-    { lat: 24.7400, lng: 46.6790, name: 'حي الزرقا - الباحة', link: '', icon: '', image: '' },
-    { lat: 24.7200, lng: 46.6840, name: 'حي الشفا - الباحة', link: '', icon: '', image: '' },
-    { lat: 24.7350, lng: 46.6700, name: 'حي الشهبة - الباحة', link: '', icon: '', image: '' },
-    { lat: 21.3880, lng: 39.9770, name: 'حي الظفير - الباحة', link: '', icon: '', image: '' },
-    { lat: 24.7300, lng: 46.6700, name: 'حي رغدان - الباحة', link: '', icon: '', image: '' },
-    { lat: 24.7500, lng: 46.6880, name: 'الشروق - الباحة', link: '', icon: '', image: '' },
-    { lat: 24.7420, lng: 46.6850, name: 'النزهة - الباحة', link: '', icon: '', image: '' },
-    { lat: 24.7400, lng: 46.6770, name: 'السلامة - الباحة', link: '', icon: '', image: '' },
-    { lat: 24.7500, lng: 46.6700, name: 'الباهر - الباحة', link: '', icon: '', image: '' },
-    { lat: 21.5320, lng: 39.2140, name: 'حي الصفا - الباحة', link: '', icon: '', image: '' },
-    { lat: 24.7430, lng: 46.6810, name: 'وسط المدينة - الباحة', link: '', icon: '', image: '' },
-
-
-{ lat: 24.7490, lng: 46.6720, name: 'حي النزهة - شقراء', link: '', icon: '', image: '' },
-    { lat: 24.7402, lng: 46.6520, name: 'حي الروضة - شقراء', link: '', icon: '', image: '' },
-    { lat: 24.7400, lng: 46.6680, name: 'حي الملك فهد - شقراء', link: '', icon: '', image: '' },
-    { lat: 20.3390, lng: 40.5700, name: 'حي الباهر - شقراء', link: '', icon: '', image: '' },
-
-
-
-
-
-
-
-
-
-
-
-
-    { lat: 16.8894, lng: 42.5824, name: 'حي الشاطئ - جيزان', link: 'https://jzn1.matajeralhai.com', icon: '', image: '' },
-    { lat: 16.8900, lng: 42.5800, name: 'حي الروضة - جيزان', link: 'https://jzn1.matajeralhai.com', icon: '', image: '' },
-    { lat: 16.8920, lng: 42.5840, name: 'حي السويس - جيزان', link: 'https://jzn1.matajeralhai.com', icon: '', image: '' },
-    { lat: 16.8930, lng: 42.5860, name: 'حي الصفا - جيزان', link: 'https://jzn1.matajeralhai.com', icon: '', image: '' },
-    { lat: 16.8940, lng: 42.5880, name: 'حي الروابي - جيزان', link: 'https://jzn1.matajeralhai.com', icon: '', image: '' },
-    { lat: 16.8950, lng: 42.5900, name: 'حي الزهور - جيزان', link: 'https://jzn1.matajeralhai.com', icon: '', image: '' },
-    { lat: 16.8960, lng: 42.5920, name: 'حي النور - جيزان', link: 'https://jzn1.matajeralhai.com', icon: '', image: '' },
-
-
-
-
-    { lat: 24.4620, lng: 39.6120, name: 'حي الدفاع - المدينة المنورة', link: 'https://md1.matajeralhai.com/', icon: '', image: '' },
-    { lat: 24.4740, lng: 39.6100, name: 'حي الخالدية - المدينة المنورة', link: 'https://md1.matajeralhai.com/', icon: '', image: '' },
-
-
-
-
-
-      { lat: 18.2175, lng: 42.5058, name: 'حي المفتاحة - أبها', link: 'https://ba1.matajeralhai.com/mainPage', icon: '', image: '' },
-
-      { lat: 21.5165, lng: 39.1790, name: 'حي السمراء - حائل', link: '', icon: '', image: '' },
-
-      { lat: 26.2085, lng: 43.5672, name: 'حي الفصيلية - الزلفى', link: '', icon: '', image: ''  },
-
-      { lat: 21.5460, lng: 39.1690, name: 'حي السلام - بريدة', link: '', icon: '', image: '' },
-    { lat: 21.6100, lng: 39.1240, name: 'حي البساتين - بريدة', link: '', icon: '', image: '' },
-
-
-
-    { lat: 20.1938, lng: 41.4710, name: 'حي المحمدية - بلجرشي', link: '', icon: '', image: '' },
-
-
-
-
-      { lat: 26.0995, lng: 43.9741, name: 'حي الضليعة - عنيزة', link: '', icon: '', image: ''  },
-      { lat: 26.0963, lng: 43.9741, name: 'حي العليا - عنيزة', link: '', icon: '', image: ''  },
-
-
-
-      { lat: 20.2196, lng: 40.3367, name: ' الليث - الليث', link: '', icon: '', image: ''  },
-
-      { lat: 25.0243, lng: 45.3072, name: 'حي الصناعية - جلاجل', link: '', icon: '', image: ''  },
-
-      { lat: 25.2745, lng: 45.3825, name: 'حي الخزامى - الغاط', link: '', icon: '', image: ''  },
-
-      { lat: 24.7490, lng: 46.6720, name: 'حي النزهة - رياض الخبراء', link: '', icon: '', image: ''  },
-
-      { lat: 20.6098, lng: 41.7462, name: 'حي الخالدية - القنفذة', link: '', icon: '', image: '' },
-
-      { lat: 17.1865, lng: 42.5923, name: 'حي النهضة - صبيا', link: '', icon: '', image: '' },
-
-    { lat: 17.1282, lng: 42.4447, name: 'حي الشريعة - بيش', link: '', icon: '', image: '' },
-
-    { lat: 20.2200, lng: 41.6300, name: 'حي البدر - المندق', link: '', icon: '', image: '' },
-
-    { lat: 18.1918, lng: 42.4680, name: 'حي المجد - المنطقة الجنوبية', link: '', icon: '', image: '' },
-
-
-
+      // المنصات المطلقة (Active)
+      { lat: 21.2854, lng: 39.2376, name: 'حي السنابل - جدة', link: 'https://jed1.matajeralhai.com/', status: 'active', storesCount: 150, offersCount: 45, image: 'https://jed1.matajeralhai.com/Images/Photos/63f719b49e404dbb9a7217ded02fef23.webp' },
+      { lat: 21.2854, lng: 39.2376, name: 'حي الأجاويد - جدة', link: 'https://jed1.matajeralhai.com/', status: 'active', storesCount: 120, offersCount: 32, image: '' },
+      { lat: 21.5433, lng: 39.1728, name: 'حي الرياض - جدة', link: 'https://jed6.matajeralhai.com/', status: 'active', storesCount: 98, offersCount: 28, image: '' },
+      { lat: 21.5454, lng: 39.2049, name: 'حي الحمدانية - جدة', link: 'https://jed4.matajeralhai.com/', status: 'active', storesCount: 85, offersCount: 25, image: '' },
+      { lat: 21.5027, lng: 39.2433, name: 'حي الفضيلة - جدة', link: 'https://jed5.matajeralhai.com/', status: 'active', storesCount: 110, offersCount: 30, image: '' },
+      { lat: 21.5752, lng: 39.2125, name: 'حي السامر - جدة', link: 'https://jed2.matajeralhai.com/', status: 'active', storesCount: 95, offersCount: 22, image: '' },
+      { lat: 21.6319, lng: 39.1225, name: 'حي النعيم - جدة', link: 'https://jed10.matajeralhai.com/', status: 'active', storesCount: 140, offersCount: 38, image: '' },
+      { lat: 21.6159, lng: 39.1277, name: 'حي المحمدية - جدة', link: 'https://jed10.matajeralhai.com/', status: 'active', storesCount: 125, offersCount: 35, image: '' },
+      { lat: 25.7605, lng: 45.3943, name: 'حي تمير - الرياض', link: 'https://rydh5.matajeralhai.com/', status: 'active', storesCount: 80, offersCount: 20, image: '' },
+      { lat: 24.4620, lng: 39.6120, name: 'حي الدفاع - المدينة المنورة', link: 'https://md1.matajeralhai.com/', status: 'active', storesCount: 75, offersCount: 18, image: '' },
+      { lat: 24.4740, lng: 39.6100, name: 'حي الخالدية - المدينة المنورة', link: 'https://md1.matajeralhai.com/', status: 'active', storesCount: 90, offersCount: 24, image: '' },
+      { lat: 16.8894, lng: 42.5824, name: 'أحياء جيزان', link: 'https://jzn1.matajeralhai.com', status: 'active', storesCount: 105, offersCount: 28, image: '' },
+      { lat: 18.2175, lng: 42.5058, name: 'حي المفتاحة - أبها', link: 'https://ba1.matajeralhai.com/mainPage', status: 'active', storesCount: 70, offersCount: 15, image: '' },
+      { lat: 25.5902, lng: 45.3012, name: 'أحياء المجمعة', link: 'https://rydh7.matajeralhai.com/mainPage', status: 'active', storesCount: 85, offersCount: 22, image: '' },
+      { lat: 25.5951, lng: 45.6338, name: 'أحياء حوطة سدير', link: 'https://rydh6.matajeralhai.com/mainPage', status: 'active', storesCount: 65, offersCount: 16, image: '' },
+      { lat: 27.0100, lng: 44.3900, name: 'أحياء حائل', link: 'https://ha1.matajeralhai.com/mainPage', status: 'active', storesCount: 95, offersCount: 25, image: '' },
+      { lat: 20.0129, lng: 41.4677, name: 'أحياء الباحة', link: 'https://ba2.matajeralhai.com/mainPage', status: 'active', storesCount: 60, offersCount: 14, image: '' },
+      { lat: 25.2951, lng: 46.4067, name: 'أحياء شقراء', link: 'https://rydh8.matajeralhai.com/mainPage', status: 'active', storesCount: 55, offersCount: 12, image: '' },
+      { lat: 26.8906, lng: 44.6497, name: 'أحياء الزلفي', link: 'https://rydh9.matajeralhai.com/mainPage', status: 'active', storesCount: 50, offersCount: 10, image: '' },
+
+      // المنصات قيد الإطلاق (Launching)
+      { lat: 21.6011, lng: 39.1802, name: 'النسيم والسليمانية - جدة', link: '', status: 'launching', storesCount: 0, offersCount: 0, launchProgress: 75, image: '' },
+      { lat: 24.7330, lng: 46.6970, name: 'أحياء بلجرشي', link: '', status: 'launching', storesCount: 0, offersCount: 0, launchProgress: 60, image: '' },
+      { lat: 21.3891, lng: 39.8579, name: 'حي الزايدي - مكة', link: '', status: 'launching', storesCount: 0, offersCount: 0, launchProgress: 55, image: '' },
+      { lat: 21.4243, lng: 39.8259, name: 'حي التنعيم - مكة', link: '', status: 'launching', storesCount: 0, offersCount: 0, launchProgress: 65, image: '' },
+      { lat: 26.0395, lng: 43.9747, name: 'أحياء بريدة', link: '', status: 'launching', storesCount: 0, offersCount: 0, launchProgress: 70, image: '' },
+      { lat: 26.0995, lng: 43.9741, name: 'أحياء عنيزة', link: '', status: 'launching', storesCount: 0, offersCount: 0, launchProgress: 50, image: '' },
+      { lat: 25.9292, lng: 43.3046, name: 'أحياء الرس', link: '', status: 'launching', storesCount: 0, offersCount: 0, launchProgress: 45, image: '' },
+      { lat: 25.8872, lng: 44.0256, name: 'أحياء المذنب', link: '', status: 'launching', storesCount: 0, offersCount: 0, launchProgress: 40, image: '' },
+      { lat: 26.1496, lng: 43.6397, name: 'أحياء البكيرية', link: '', status: 'launching', storesCount: 0, offersCount: 0, launchProgress: 35, image: '' },
+      { lat: 25.9178, lng: 43.7036, name: 'أحياء البدائع', link: '', status: 'launching', storesCount: 0, offersCount: 0, launchProgress: 30, image: '' },
+      { lat: 25.8614, lng: 43.5711, name: 'أحياء عقلة الصقور', link: '', status: 'launching', storesCount: 0, offersCount: 0, launchProgress: 25, image: '' },
+      { lat: 25.9758, lng: 43.5711, name: 'أحياء عيون الجواء', link: '', status: 'launching', storesCount: 0, offersCount: 0, launchProgress: 20, image: '' },
+      { lat: 18.2962, lng: 42.5058, name: 'أحياء خميس مشيط', link: '', status: 'launching', storesCount: 0, offersCount: 0, launchProgress: 55, image: '' },
+      { lat: 24.4871, lng: 39.5679, name: 'أحياء الحناكية', link: '', status: 'launching', storesCount: 0, offersCount: 0, launchProgress: 40, image: '' },
+      { lat: 20.1938, lng: 41.4710, name: 'أحياء المندق', link: '', status: 'launching', storesCount: 0, offersCount: 0, launchProgress: 35, image: '' },
+      { lat: 17.1865, lng: 42.5923, name: 'أحياء صبيا', link: '', status: 'launching', storesCount: 0, offersCount: 0, launchProgress: 45, image: '' },
+      { lat: 17.1282, lng: 42.4447, name: 'أحياء بيش', link: '', status: 'launching', storesCount: 0, offersCount: 0, launchProgress: 30, image: '' },
+      { lat: 20.2196, lng: 40.3367, name: 'أحياء الليث', link: '', status: 'launching', storesCount: 0, offersCount: 0, launchProgress: 50, image: '' },
+      { lat: 20.6098, lng: 41.7462, name: 'أحياء القنفذة', link: '', status: 'launching', storesCount: 0, offersCount: 0, launchProgress: 40, image: '' },
+      { lat: 25.0243, lng: 45.3072, name: 'أحياء جلاجل', link: '', status: 'launching', storesCount: 0, offersCount: 0, launchProgress: 60, image: '' },
+      { lat: 25.2745, lng: 45.3825, name: 'أحياء الغاط', link: '', status: 'launching', storesCount: 0, offersCount: 0, launchProgress: 45, image: '' },
+      { lat: 25.7277, lng: 45.1645, name: 'أحياء رياض الخبراء', link: '', status: 'launching', storesCount: 0, offersCount: 0, launchProgress: 35, image: '' },
+
+      // المنصات المخطط لها (Planned)
+      { lat: 21.5165, lng: 39.1790, name: 'حي المروة - جدة', link: '', status: 'planned', storesCount: 0, offersCount: 0, plannedLaunch: 'Q2 2025', image: '' },
+      { lat: 21.5300, lng: 39.2140, name: 'حي الصفا - جدة', link: '', status: 'planned', storesCount: 0, offersCount: 0, plannedLaunch: 'Q2 2025', image: '' },
+      { lat: 21.5892, lng: 39.1979, name: 'حي الجامعة - جدة', link: '', status: 'planned', storesCount: 0, offersCount: 0, plannedLaunch: 'Q3 2025', image: '' },
+      { lat: 21.4900, lng: 39.2400, name: 'حي العزيزية - جدة', link: '', status: 'planned', storesCount: 0, offersCount: 0, plannedLaunch: 'Q3 2025', image: '' },
+      { lat: 21.6100, lng: 39.1240, name: 'حي البوادي - جدة', link: '', status: 'planned', storesCount: 0, offersCount: 0, plannedLaunch: 'Q4 2025', image: '' },
+      { lat: 21.4000, lng: 39.8200, name: 'حي الشرائع - مكة', link: '', status: 'planned', storesCount: 0, offersCount: 0, plannedLaunch: 'Q2 2025', image: '' },
+      { lat: 21.4100, lng: 39.8100, name: 'حي العوالي - مكة', link: '', status: 'planned', storesCount: 0, offersCount: 0, plannedLaunch: 'Q3 2025', image: '' },
+      { lat: 21.4200, lng: 39.8300, name: 'حي النوارية - مكة', link: '', status: 'planned', storesCount: 0, offersCount: 0, plannedLaunch: 'Q3 2025', image: '' },
+      { lat: 21.3800, lng: 39.8400, name: 'حي بطحاء قريش - مكة', link: '', status: 'planned', storesCount: 0, offersCount: 0, plannedLaunch: 'Q4 2025', image: '' },
+      { lat: 22.8020, lng: 39.0434, name: 'أحياء رابغ', link: '', status: 'planned', storesCount: 0, offersCount: 0, plannedLaunch: 'Q2 2025', image: '' },
+      { lat: 22.2544, lng: 39.7181, name: 'أحياء خليص', link: '', status: 'planned', storesCount: 0, offersCount: 0, plannedLaunch: 'Q3 2025', image: '' },
+      { lat: 27.5114, lng: 41.0371, name: 'أحياء الحائط - حائل', link: '', status: 'planned', storesCount: 0, offersCount: 0, plannedLaunch: 'Q1 2026', image: '' },
+      { lat: 24.5000, lng: 39.6000, name: 'أحياء أخرى بالمدينة', link: '', status: 'planned', storesCount: 0, offersCount: 0, plannedLaunch: 'Q4 2025', image: '' },
+      { lat: 24.6500, lng: 46.7000, name: 'أحياء جديدة بالرياض', link: '', status: 'planned', storesCount: 0, offersCount: 0, plannedLaunch: 'Q1 2026', image: '' }
     ];
 
+    function getStatusInfo(status, location) {
+      switch(status) {
+        case 'active':
+          return {
+            text: 'متاح الآن',
+            class: 'status-active',
+            description: 'يمكنك زيارة المنصة والاستفادة من العروض المتاحة'
+          };
+        case 'launching':
+          return {
+            text: 'جاري الإطلاق',
+            class: 'status-launching',
+            description: `التقدم: ${location.launchProgress || 0}% - سيكون متاحاً قريباً`
+          };
+        case 'planned':
+          return {
+            text: 'قريباً',
+            class: 'status-planned',
+            description: `مخطط للإطلاق: ${location.plannedLaunch || 'قريباً'}`
+          };
+        default:
+          return {
+            text: 'غير محدد',
+            class: 'status-planned',
+            description: 'الحالة غير محددة'
+          };
+      }
+    }
+
     function initMap() {
-   const mapCenter = { lat: 24.0000, lng: 45.0000 };
+      console.log('بدء تهيئة الخريطة...');
+      
+      // تحديد أيقونات الـ pins حسب الحالة (بعد تحميل Google Maps API)
+ const pinIcons = {
+  active: {
+    url: './activee.svg',
+    scaledSize: new google.maps.Size(50, 60),
+    anchor: new google.maps.Point(25, 60)
+  },
+  launching: {
+    url: './pin.svg', 
+    scaledSize: new google.maps.Size(50, 60),
+    anchor: new google.maps.Point(25, 60)
+  },
+  planned: {
+    url: './planned.svg',
+    scaledSize: new google.maps.Size(50, 60), 
+    anchor: new google.maps.Point(25, 60)
+  }
+};
+      const mapCenter = { lat: 24.0000, lng: 45.0000 };
       map = new google.maps.Map(document.getElementById('map'), {
         zoom: 6,
         center: mapCenter,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         restriction: {
           latLngBounds: {
-            north: 32.0,
-            south: 16.5,
+            north: 50.0,
+            south: 11.5,
             west: 36.5,
             east: 50.5
           },
           strictBounds: true
-        }
+        },
+        styles: [
+          {
+            featureType: "poi",
+            elementType: "labels",
+            stylers: [{ visibility: "off" }]
+          }
+        ]
       });
 
-      // Create markers
-      locations.forEach(location => {
+      console.log('عدد المواقع لإضافتها:', locations.length);
+
+      // إنشاء العلامات
+      locations.forEach((location, index) => {
+        const status = location.status || 'planned';
+        const icon = pinIcons[status] || pinIcons.planned;
+        
+        console.log(`إنشاء علامة ${index + 1}: ${location.name} - الحالة: ${status}`);
+        
         const marker = new google.maps.Marker({
           position: { lat: location.lat, lng: location.lng },
           map: map,
-          icon: {
-            url: './pin.svg',
-            scaledSize: new google.maps.Size(50, 40)
-          }
+          icon: icon,
+          title: location.name
         });
 
         marker.addListener('click', () => {
+          console.log('تم النقر على:', location.name);
           showSidebar(location);
         });
 
         markers.push(marker);
       });
+
+      console.log('تم إنشاء', markers.length, 'علامة على الخريطة');
     }
 
     function performSearch() {
       const inputText = document.getElementById("search-input").value.toLowerCase().trim();
       if (inputText === "") {
-        alert("يرجى إدخال اسم الحي.");
+        alert("يرجى إدخال اسم الحي للبحث.");
         return;
       }
+
       let foundLocations = [];
       locations.forEach(location => {
         if (location.name.toLowerCase().includes(inputText)) {
@@ -368,27 +415,27 @@
         }
       });
 
-      // Clear existing markers
+      // مسح العلامات الموجودة
       markers.forEach(marker => marker.setMap(null));
       markers = [];
 
-      // Clear existing circle
+      // مسح الدائرة الموجودة
       if (highlightCircle) {
         highlightCircle.setMap(null);
       }
 
       if (foundLocations.length === 0) {
-        alert("لا توجد نتائج مطابقة. يرجى إدخال اسم حي صحيح.");
+        alert("لا توجد نتائج مطابقة. يرجى المحاولة بكلمات أخرى.");
       } else {
         const bounds = new google.maps.LatLngBounds();
         foundLocations.forEach(location => {
+          const status = location.status || 'planned';
+          const icon = pinIcons[status] || pinIcons.planned;
+          
           const marker = new google.maps.Marker({
             position: { lat: location.lat, lng: location.lng },
             map: map,
-            icon: {
-              url: './pin.svg',
-              scaledSize: new google.maps.Size(50, 40)
-            },
+            icon: icon,
             title: location.name
           });
 
@@ -399,48 +446,143 @@
           markers.push(marker);
           bounds.extend(marker.position);
         });
-        map.fitBounds(bounds);
-        if (foundLocations.length === 1) {
-          map.setZoom(16);
 
-          // Draw circle around the found location
+        map.fitBounds(bounds);
+        
+        if (foundLocations.length === 1) {
+          map.setZoom(14);
+
+          // رسم دائرة حول الموقع المكتشف
           highlightCircle = new google.maps.Circle({
-            strokeColor: "#FF0000",
+            strokeColor: "#ea9c57",
             strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: "#FF0000",
-            fillOpacity: 0,
+            strokeWeight: 3,
+            fillColor: "#ea9c57",
+            fillOpacity: 0.1,
             map: map,
             center: { lat: foundLocations[0].lat, lng: foundLocations[0].lng },
-            radius: 500
+            radius: 1000
           });
 
-          // Show sidebar for the found location
+          // إظهار الشريط الجانبي للموقع المكتشف
           showSidebar(foundLocations[0]);
         }
       }
     }
 
     function showSidebar(location) {
+      const statusInfo = getStatusInfo(location.status, location);
+      
       document.getElementById('location-name').textContent = location.name;
       document.getElementById('location-details').textContent = location.name;
-      document.getElementById('location-link').href = location.link || '#';
-      document.getElementById('location-image').src = location.image || 'https://via.placeholder.com/300';
+      
+      // إظهار شارة الحالة
+      const statusBadge = document.getElementById('status-badge');
+      statusBadge.textContent = statusInfo.text;
+      statusBadge.className = 'status-badge ' + statusInfo.class;
+      
+      // إظهار الإحصائيات
+      const statsContainer = document.getElementById('stats-container');
+      if (location.status === 'active') {
+        statsContainer.innerHTML = `
+          <h4 style="margin: 0 0 10px 0; color: #2c3e50;">📊 إحصائيات المنصة</h4>
+          <div class="stat-item">
+            <span>عدد المتاجر:</span>
+            <strong>${location.storesCount || 0} متجر</strong>
+          </div>
+          <div class="stat-item">
+            <span>عدد العروض:</span>
+            <strong>${location.offersCount || 0} عرض</strong>
+          </div>
+          <div class="stat-item">
+            <span>الحالة:</span>
+            <strong style="color: #22c55e;">متاحة الآن ✓</strong>
+          </div>
+        `;
+      } else if (location.status === 'launching') {
+        statsContainer.innerHTML = `
+          <h4 style="margin: 0 0 10px 0; color: #2c3e50;">🚧 حالة الإطلاق</h4>
+          <div class="stat-item">
+            <span>التقدم:</span>
+            <strong>${location.launchProgress || 0}%</strong>
+          </div>
+          <div class="stat-item">
+            <span>الحالة:</span>
+            <strong style="color: #ea9c57;">جاري العمل عليها</strong>
+          </div>
+          <p style="margin: 10px 0; color: #666; font-size: 14px;">
+            نعمل بجد لإطلاق هذه المنصة قريباً. سنبلغك فور توفرها!
+          </p>
+        `;
+      } else {
+        statsContainer.innerHTML = `
+          <h4 style="margin: 0 0 10px 0; color: #2c3e50;">📅 مخطط للمستقبل</h4>
+          <div class="stat-item">
+            <span>الإطلاق المتوقع:</span>
+            <strong>${location.plannedLaunch || 'قريباً'}</strong>
+          </div>
+          <div class="stat-item">
+            <span>الحالة:</span>
+            <strong style="color: #a78bfa;">قيد التخطيط</strong>
+          </div>
+          <p style="margin: 10px 0; color: #666; font-size: 14px;">
+            هذه المنصة مخططة للإطلاق قريباً. اشترك للحصول على إشعار عند الإطلاق!
+          </p>
+        `;
+      }
+      
+      // إظهار رابط الزيارة أو إخفاؤه
+      const locationLink = document.getElementById('location-link');
+      if (location.link && location.status === 'active') {
+        locationLink.href = location.link;
+        locationLink.style.display = 'inline-block';
+        locationLink.textContent = 'زيارة المنصة الآن';
+      } else {
+        locationLink.style.display = 'none';
+      }
+      
+      // إظهار الصورة
+      const locationImage = document.getElementById('location-image');
+      if (location.image) {
+        locationImage.src = location.image;
+        locationImage.style.display = 'block';
+      } else {
+        locationImage.style.display = 'none';
+      }
 
-      const shareMessage = `Check out this location: ${location.name} - Coordinates: ${location.lat}, ${location.lng}`;
+      // إنشاء رسالة مشاركة واتساب
+      let shareMessage = `🏪 اكتشف موقع: ${location.name}\n`;
+      shareMessage += `📍 الحالة: ${statusInfo.text}\n`;
+      
+      if (location.status === 'active' && location.link) {
+        shareMessage += `🔗 زيارة المنصة: ${location.link}\n`;
+        shareMessage += `🏬 المتاجر: ${location.storesCount || 0}\n`;
+        shareMessage += `🎯 العروض: ${location.offersCount || 0}\n`;
+      } else if (location.status === 'launching') {
+        shareMessage += `⏳ التقدم: ${location.launchProgress || 0}%\n`;
+      } else {
+        shareMessage += `📅 الإطلاق المتوقع: ${location.plannedLaunch || 'قريباً'}\n`;
+      }
+      
+      shareMessage += `\n📱 تابع جميع منصات متاجر الحي على خريطتنا التفاعلية!`;
+      
       const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareMessage)}`;
+      
+      // تحديث أزرار الواتساب
       document.getElementById('share-btn-sidebar').href = whatsappUrl;
+      document.getElementById('whatsapp-share-sidebar').href = whatsappUrl;
 
+      // إظهار الشريط الجانبي
       document.getElementById('sidebar').style.display = 'block';
       document.getElementById('map').style.width = '70%';
 
       google.maps.event.trigger(map, 'resize');
     }
 
+    // أحداث الواجهة
     document.getElementById('close-sidebar').addEventListener('click', function() {
       document.getElementById('sidebar').style.display = 'none';
       document.getElementById('map').style.width = '100%';
-
       google.maps.event.trigger(map, 'resize');
     });
 
@@ -454,8 +596,26 @@
       }
     });
 
-    // Initialize the map
-    window.onload = initMap;
+    // تهيئة الخريطة
+    function initMapCallback() {
+      console.log('Google Maps API تم تحميلها بنجاح');
+      if (typeof google !== 'undefined' && google.maps) {
+        initMap();
+      } else {
+        console.error('Google Maps API غير متاحة');
+        setTimeout(initMapCallback, 1000); // إعادة المحاولة بعد ثانية
+      }
+    }
+
+    // استبدال window.onload
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initMapCallback);
+    } else {
+      initMapCallback();
+    }
+
+    // إضافة callback عالمي لـ Google Maps
+    window.initMap = initMap;
   </script>
 </body>
 </html>
