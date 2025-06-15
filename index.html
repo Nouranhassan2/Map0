@@ -391,28 +391,28 @@
           scaledSize: new google.maps.Size(50, 60),
           anchor: new google.maps.Point(25, 60)
         },
-        planned: {
+planned: {
           url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
             <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
               <defs>
-                <linearGradient id="purpleGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" style="stop-color:#c4b5fd;stop-opacity:1" />
-                  <stop offset="100%" style="stop-color:#a78bfa;stop-opacity:1" />
+                <linearGradient id="redGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" style="stop-color:#fca5a5;stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:#f87171;stop-opacity:1" />
                 </linearGradient>
               </defs>
               <ellipse cx="50" cy="115" rx="15" ry="5" fill="#00000020"/>
               <path d="M50 10 C30 10, 15 25, 15 45 C15 65, 50 100, 50 100 S85 65, 85 45 C85 25, 70 10, 50 10 Z" 
-                    fill="url(#purpleGradient)" stroke="#8b5cf6" stroke-width="2"/>
-              <circle cx="50" cy="45" r="25" fill="#f8fbfd" stroke="#a78bfa" stroke-width="2"/>
+                    fill="url(#redGradient)" stroke="#ef4444" stroke-width="2"/>
+              <circle cx="50" cy="45" r="25" fill="#f8fbfd" stroke="#f87171" stroke-width="2"/>
               <g transform="translate(50, 45)">
-                <rect x="-12" y="-8" width="24" height="16" fill="#a78bfa" rx="2"/>
+                <rect x="-12" y="-8" width="24" height="16" fill="#f87171" rx="2"/>
                 <rect x="-3" y="-2" width="6" height="8" fill="#f8fbfd" rx="1"/>
                 <rect x="-10" y="-6" width="4" height="4" fill="#f8fbfd" rx="0.5"/>
                 <rect x="6" y="-6" width="4" height="4" fill="#f8fbfd" rx="0.5"/>
-                <polygon points="-14,-8 0,-15 14,-8" fill="#8b5cf6"/>
-                <circle cx="2" cy="2" r="0.8" fill="#a78bfa"/>
+                <polygon points="-14,-8 0,-15 14,-8" fill="#ef4444"/>
+                <circle cx="2" cy="2" r="0.8" fill="#f87171"/>
               </g>
-              <circle cx="50" cy="45" r="3" fill="#7ebfe9"/>
+              <circle cx="50" cy="45" r="3" fill="#dc2626"/>
               <ellipse cx="42" cy="35" rx="8" ry="12" fill="#ffffff40"/>
             </svg>
           `),
@@ -420,19 +420,18 @@
           anchor: new google.maps.Point(25, 60)
         }
       };
-      
-      const mapCenter = { lat: 24.0000, lng: 45.0000 };
+const mapCenter = { lat: 25.7, lng: 45.3 }; // ✅ يضع الخريطة على تمير وسدير
       map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 6,
+        zoom: 9,
         center: mapCenter,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         restriction: {
           latLngBounds: {
-            north: 32.0,
-            south: 16.5,
-            west: 36.5,
-            east: 50.5
-          },
+      north: 33.5,
+      south: 16.5,
+      west: 34.5,
+      east: 52.0
+    },
           strictBounds: true
         },
         styles: [
