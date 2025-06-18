@@ -121,7 +121,7 @@
       box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
     }
     
-    .filter-btn[data-filter="coming"]::after {
+    .filter-btn[data-filter="launching"]::after {
       background: #ea9c57;
       box-shadow: 0 0 6px rgba(234, 156, 87, 0.5);
     }
@@ -341,26 +341,26 @@
   <div class="map-controls">
     <div class="map-filters">
       <button class="filter-btn active" data-filter="all">
-        <span class="filter-count" id="count-all">0</span>
+        <span class="filter-count" id="count-all">29</span>
         جميع المنصات
       </button>
       <button class="filter-btn" data-filter="active">
-        <span class="filter-count" id="count-active">0</span>
+        <!-- <span class="filter-count" id="count-active"></span> -->
         المنصات المتوفرة حاليًا
       </button>
       <button class="filter-btn" data-filter="launching">
-        <span class="filter-count" id="count-launching">0</span>
-        منصات قيد التجهيز
+        <!-- <span class="filter-count" id="count-launching"></span> -->
+        منصات قيد الإطلاق
       </button>
       <button class="filter-btn" data-filter="planned">
-        <span class="filter-count" id="count-planned">0</span>
+        <!-- <span class="filter-count" id="count-planned"></span> -->
         منصات مخطط لها
       </button>
     </div>
   </div>
 
-  <!-- أدوات التحكم
-  <div class="controls">
+  <!-- أدوات التحكم -->
+  <!-- <div class="controls">
     <input id="search-input" type="text" placeholder="ابحث عن حي..." />
     <button id="search-button">بحث</button>
     <a id="share-btn-sidebar" href="#" target="_blank" class="whatsapp-share-btn">شارك عبر واتساب</a>
@@ -496,8 +496,13 @@
       }
     }
 
-    // تحديث عدادات الأزرار
+    // تحديث عدادات الأزرار (معطلة حالياً)
     function updateFilterCounts() {
+      // الكود معطل لأن العدادات في HTML معلقة
+      console.log('العدادات معطلة حالياً');
+      
+      // إذا كنت تريد تفعيل العدادات، قم بإلغاء التعليق من HTML أولاً
+      /*
       const counts = {
         all: allLocations.length,
         active: allLocations.filter(loc => loc.status === 'active').length,
@@ -511,6 +516,7 @@
       document.getElementById('count-planned').textContent = counts.planned;
 
       console.log('تم تحديث العدادات:', counts);
+      */
     }
 
     // تصفية المنصات حسب النوع
@@ -688,8 +694,8 @@
 
       console.log('عدد المواقع لإضافتها:', allLocations.length);
 
-      // تحديث العدادات
-      updateFilterCounts();
+      // تحديث العدادات (تم إلغاؤها لأن العناصر معلقة)
+      // updateFilterCounts();
 
       // إنشاء جميع العلامات في البداية
       allLocations.forEach((location, index) => {
