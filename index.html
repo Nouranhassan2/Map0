@@ -15,6 +15,7 @@
       height: 100vh;
       width: 100%;
       transition: width 0.3s;
+      margin-top: 80px; /* مساحة للأزرار */
     }
     #sidebar {
       height: 100%;
@@ -30,16 +31,117 @@
       transition: transform 0.3s ease;
       overflow-y: auto;
     }
+    
+    /* أزرار التحكم الجديدة */
+    .map-controls {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 999;
+      background: #ffffff;
+      padding: 15px 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .map-filters {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .filter-btn {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border: 2px solid #dee2e6;
+      color: #495057;
+      padding: 12px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      min-width: 180px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .filter-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: left 0.5s;
+    }
+    
+    .filter-btn:hover::before {
+      left: 100%;
+    }
+    
+    .filter-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      border-color: #ea9c57;
+      color: #ea9c57;
+    }
+    
+    .filter-btn.active {
+      background: linear-gradient(135deg, #ea9c57 0%, #d18a46 100%);
+      border-color: #d18a46;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(234, 156, 87, 0.4);
+    }
+    
+    .filter-btn.active:hover {
+      background: linear-gradient(135deg, #d18a46 0%, #b8763a 100%);
+      color: white;
+    }
+    
+    /* أيقونات الحالة */
+    .filter-btn::after {
+      content: '';
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+      margin-left: -4px;
+    }
+    
+    .filter-btn[data-filter="active"]::after {
+      background: #22c55e;
+      box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
+    }
+    
+    .filter-btn[data-filter="coming"]::after {
+      background: #ea9c57;
+      box-shadow: 0 0 6px rgba(234, 156, 87, 0.5);
+    }
+    
+    .filter-btn[data-filter="planned"]::after {
+      background: #a78bfa;
+      box-shadow: 0 0 6px rgba(167, 139, 250, 0.5);
+    }
+    
     .controls {
       display: flex;
       justify-content: space-between;
       margin-bottom: 10px;
       position: absolute;
-      top: 20px;
+      top: 100px; /* تحت الأزرار */
       right: 20px;
       z-index: 999;
       gap: 10px;
     }
+    
     #sidebar h3 {
       margin-top: 0;
       color: #ea9c57;
@@ -172,13 +274,50 @@
       margin-bottom: 8px;
     }
     
+    /* عداد المنصات */
+    .filter-count {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 12px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: bold;
+      margin-right: 5px;
+      color: #495057;
+      border: 1px solid #dee2e6;
+    }
+    
+    .filter-btn.active .filter-count {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border-color: transparent;
+    }
+    
     @media (max-width: 768px) {
       #sidebar {
         width: 100%;
       }
       #map {
         height: 60vh;
+        margin-top: 120px; /* مساحة أكبر للموبايل */
       }
+      .map-controls {
+        position: relative;
+        top: 0;
+        padding: 15px 10px;
+      }
+      
+      .map-filters {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .filter-btn {
+        min-width: auto;
+        font-size: 13px;
+        padding: 10px 15px;
+        width: 100%;
+      }
+      
       .controls {
         flex-direction: column;
         position: relative;
@@ -198,12 +337,34 @@
 </head>
 <body>
 
-  <!-- أدوات التحكم -->
-  <!-- <div class="controls">
-    <!-- <input id="search-input" type="text" placeholder="ابحث عن حي..." />
+  <!-- أزرار التحكم الجديدة -->
+  <div class="map-controls">
+    <div class="map-filters">
+      <button class="filter-btn active" data-filter="all">
+        <span class="filter-count" id="count-all">0</span>
+        جميع المنصات
+      </button>
+      <button class="filter-btn" data-filter="active">
+        <span class="filter-count" id="count-active">0</span>
+        المنصات المتوفرة حاليًا
+      </button>
+      <button class="filter-btn" data-filter="launching">
+        <span class="filter-count" id="count-launching">0</span>
+        منصات قيد التجهيز
+      </button>
+      <button class="filter-btn" data-filter="planned">
+        <span class="filter-count" id="count-planned">0</span>
+        منصات مخطط لها
+      </button>
+    </div>
+  </div>
+
+  <!-- أدوات التحكم
+  <div class="controls">
+    <input id="search-input" type="text" placeholder="ابحث عن حي..." />
     <button id="search-button">بحث</button>
-     <a id="share-btn-sidebar" href="#" target="_blank" class="whatsapp-share-btn">شارك عبر واتساب</a> -->
-  <!-- </div> --> 
+    <a id="share-btn-sidebar" href="#" target="_blank" class="whatsapp-share-btn">شارك عبر واتساب</a>
+  </div> -->
 
   <!-- الخريطة -->
   <div id="map"></div>
@@ -237,6 +398,8 @@
   <script>
     let map, highlightCircle;
     let markers = [];
+    let allLocations = []; // نسخة من جميع المواقع
+    let currentFilter = 'all'; // الفلتر الحالي
 
     const locations = [
       // المنصات المطلقة (Active)
@@ -301,6 +464,9 @@
       { lat: 24.6500, lng: 46.7000, name: 'أحياء جديدة بالرياض', link: '', status: 'planned', storesCount: 0, offersCount: 0, plannedLaunch: 'Q1 2026', image: '' }
     ];
 
+    // نسخ البيانات
+    allLocations = [...locations];
+
     function getStatusInfo(status, location) {
       switch(status) {
         case 'active':
@@ -330,11 +496,87 @@
       }
     }
 
+    // تحديث عدادات الأزرار
+    function updateFilterCounts() {
+      const counts = {
+        all: allLocations.length,
+        active: allLocations.filter(loc => loc.status === 'active').length,
+        launching: allLocations.filter(loc => loc.status === 'launching').length,
+        planned: allLocations.filter(loc => loc.status === 'planned').length
+      };
+
+      document.getElementById('count-all').textContent = counts.all;
+      document.getElementById('count-active').textContent = counts.active;
+      document.getElementById('count-launching').textContent = counts.launching;
+      document.getElementById('count-planned').textContent = counts.planned;
+
+      console.log('تم تحديث العدادات:', counts);
+    }
+
+    // تصفية المنصات حسب النوع
+    function filterPlatforms(filter) {
+      console.log('تصفية المنصات حسب:', filter);
+      
+      // إخفاء جميع العلامات أولاً
+      markers.forEach(marker => {
+        marker.setMap(null);
+      });
+      
+      // تحديد المواقع المراد عرضها
+      let locationsToShow = [];
+      if (filter === 'all') {
+        locationsToShow = allLocations;
+      } else {
+        locationsToShow = allLocations.filter(location => location.status === filter);
+      }
+      
+      console.log(`عدد المنصات المراد عرضها: ${locationsToShow.length}`);
+      
+      // إنشاء علامات جديدة للمواقع المفلترة
+      markers = [];
+      locationsToShow.forEach((location, index) => {
+        const marker = createMarker(location);
+        markers.push(marker);
+      });
+      
+      // تحديث الزر النشط
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+      
+      currentFilter = filter;
+      
+      console.log(`تم عرض ${markers.length} علامة على الخريطة`);
+    }
+
+    // إنشاء علامة واحدة
+    function createMarker(location) {
+      const status = location.status || 'planned';
+      const icon = pinIcons[status] || pinIcons.planned;
+      
+      const marker = new google.maps.Marker({
+        position: { lat: location.lat, lng: location.lng },
+        map: map,
+        icon: icon,
+        title: location.name,
+        clickable: true,
+        optimized: false
+      });
+
+      marker.addListener('click', function() {
+        console.log('تم النقر على:', location.name);
+        showSidebar(location);
+      });
+
+      return marker;
+    }
+
     function initMap() {
       console.log('بدء تهيئة الخريطة...');
       
       // تحديد أيقونات الـ pins الجديدة بالتصميم المطور
-      const pinIcons = {
+      window.pinIcons = {
         active: {
           url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
             <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
@@ -391,7 +633,7 @@
           scaledSize: new google.maps.Size(50, 60),
           anchor: new google.maps.Point(25, 60)
         },
-planned: {
+        planned: {
           url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
             <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
               <defs>
@@ -420,18 +662,19 @@ planned: {
           anchor: new google.maps.Point(25, 60)
         }
       };
-const mapCenter = { lat: 25.7, lng: 45.3 }; // ✅ يضع الخريطة على تمير وسدير
+
+      const mapCenter = { lat: 25.7, lng: 45.3 };
       map = new google.maps.Map(document.getElementById('map'), {
         zoom: 9,
         center: mapCenter,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         restriction: {
           latLngBounds: {
-      north: 33.5,
-      south: 16.5,
-      west: 34.5,
-      east: 52.0
-    },
+            north: 33.5,
+            south: 16.5,
+            west: 34.5,
+            east: 52.0
+          },
           strictBounds: true
         },
         styles: [
@@ -443,39 +686,26 @@ const mapCenter = { lat: 25.7, lng: 45.3 }; // ✅ يضع الخريطة على 
         ]
       });
 
-      console.log('عدد المواقع لإضافتها:', locations.length);
+      console.log('عدد المواقع لإضافتها:', allLocations.length);
 
-      // إنشاء العلامات
-      locations.forEach((location, index) => {
-        const status = location.status || 'planned';
-        const icon = pinIcons[status] || pinIcons.planned;
-        
-        console.log(`إنشاء علامة ${index + 1}: ${location.name} - الحالة: ${status}`);
-        
-        const marker = new google.maps.Marker({
-          position: { lat: location.lat, lng: location.lng },
-          map: map,
-          icon: icon,
-          title: location.name,
-          clickable: true,
-          optimized: false
-        });
+      // تحديث العدادات
+      updateFilterCounts();
 
-        // إضافة event listener للنقر
-        marker.addListener('click', function() {
-          console.log('تم النقر على:', location.name);
-          try {
-            showSidebar(location);
-            console.log('تم فتح الـ sidebar بنجاح');
-          } catch (error) {
-            console.error('خطأ في فتح الـ sidebar:', error);
-          }
-        });
-
+      // إنشاء جميع العلامات في البداية
+      allLocations.forEach((location, index) => {
+        const marker = createMarker(location);
         markers.push(marker);
       });
 
       console.log('تم إنشاء', markers.length, 'علامة على الخريطة');
+
+      // إضافة event listeners للأزرار
+      document.querySelectorAll('.filter-btn').forEach(button => {
+        button.addEventListener('click', function() {
+          const filter = this.getAttribute('data-filter');
+          filterPlatforms(filter);
+        });
+      });
     }
 
     function performSearch() {
@@ -486,7 +716,7 @@ const mapCenter = { lat: 25.7, lng: 45.3 }; // ✅ يضع الخريطة على 
       }
 
       let foundLocations = [];
-      locations.forEach(location => {
+      allLocations.forEach(location => {
         if (location.name.toLowerCase().includes(inputText)) {
           foundLocations.push(location);
         }
@@ -506,20 +736,7 @@ const mapCenter = { lat: 25.7, lng: 45.3 }; // ✅ يضع الخريطة على 
       } else {
         const bounds = new google.maps.LatLngBounds();
         foundLocations.forEach(location => {
-          const status = location.status || 'planned';
-          const icon = pinIcons[status] || pinIcons.planned;
-          
-          const marker = new google.maps.Marker({
-            position: { lat: location.lat, lng: location.lng },
-            map: map,
-            icon: icon,
-            title: location.name
-          });
-
-          marker.addListener('click', () => {
-            showSidebar(location);
-          });
-
+          const marker = createMarker(location);
           markers.push(marker);
           bounds.extend(marker.position);
         });
@@ -544,6 +761,13 @@ const mapCenter = { lat: 25.7, lng: 45.3 }; // ✅ يضع الخريطة على 
           // إظهار الشريط الجانبي للموقع المكتشف
           showSidebar(foundLocations[0]);
         }
+
+        // إعادة تعيين الفلتر إلى "الكل" وتحديث الأزرار
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        document.querySelector('[data-filter="all"]').classList.add('active');
+        currentFilter = 'all';
       }
     }
 
@@ -719,7 +943,7 @@ const mapCenter = { lat: 25.7, lng: 45.3 }; // ✅ يضع الخريطة على 
         initMap();
       } else {
         console.error('Google Maps API غير متاحة');
-        setTimeout(initMapCallback, 1000); // إعادة المحاولة بعد ثانية
+        setTimeout(initMapCallback, 1000);
       }
     }
 
