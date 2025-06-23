@@ -291,6 +291,30 @@
       color: white;
       border-color: transparent;
     }
+
+    /* زر العودة إلى السعودية */
+    .return-to-saudi-btn {
+      position: absolute;
+      top: 100px;
+      left: 20px;
+      z-index: 999;
+      background: linear-gradient(135deg, #ea9c57 0%, #d18a46 100%);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: 0 4px 15px rgba(234, 156, 87, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .return-to-saudi-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(234, 156, 87, 0.4);
+      background: linear-gradient(135deg, #d18a46 0%, #b8763a 100%);
+    }
     
     @media (max-width: 768px) {
       #sidebar {
@@ -303,7 +327,6 @@
       .map-controls {
         position: relative;
         top: 0;
-
         padding: 15px 10px;
         margin-top: 160px;
       }
@@ -311,8 +334,7 @@
       .map-filters {
         flex-direction: column;
         gap: 10px;
-                margin-top: 30px;
-
+        margin-top: 30px;
       }
       
       .filter-btn {
@@ -336,8 +358,115 @@
         width: 200px;
         margin-bottom: 10px;
       }
+
+      .return-to-saudi-btn {
+        top: 140px;
+        left: 10px;
+        padding: 10px 15px;
+        font-size: 12px;
+      }
     }
-  
+    .filter-btn {
+      background: linear-gradient(135deg, #fefefe 0%, #f7fafc 100%);
+      border: 2px solid #e2e8f0;
+      color: #4a5568;
+      padding: 14px 24px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.4s ease;
+      white-space: nowrap;
+      min-width: 180px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    }
+    
+   .filter-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+    }
+    
+   .filter-btn[data-filter="all"] {
+      background: linear-gradient(135deg, #2b6cb0 0%, #2c5282 100%);
+      border-color: #2b6cb0;
+      color: white;
+    }
+    
+   .filter-btn[data-filter="all"]:hover {
+      background: linear-gradient(135deg, #2c5282 0%, #2a4365 100%);
+      box-shadow: 0 8px 30px rgba(43, 108, 176, 0.4);
+    }
+    
+   .filter-btn[data-filter="active"] {
+      color: #059669;
+      border-color: #059669;
+      background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    }
+    
+   .filter-btn[data-filter="active"]:hover {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      border-color: #059669;
+      color: white;
+      box-shadow: 0 8px 30px rgba(5, 150, 105, 0.4);
+    }
+    
+   .filter-btn[data-filter="launching"] {
+      color: #d97706;
+      border-color: #d97706;
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    }
+    
+   .filter-btn[data-filter="launching"]:hover {
+      background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+      border-color: #d97706;
+      color: white;
+      box-shadow: 0 8px 30px rgba(217, 119, 6, 0.4);
+    }
+    
+   .filter-btn[data-filter="planned"] {
+      color: #dc2626;
+      border-color: #dc2626;
+      background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+    }
+    
+   .filter-btn[data-filter="planned"]:hover {
+      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+      border-color: #dc2626;
+      color: white;
+      box-shadow: 0 8px 30px rgba(220, 38, 38, 0.4);
+    }
+
+    /* أيقونات الحالة - النسخة الثانية */
+   .filter-btn::after {
+      content: '';
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      margin-left: 10px;
+      transition: all 0.3s ease;
+    }
+    
+   .filter-btn[data-filter="all"]::after {
+      background: radial-gradient(circle, #3b82f6, #1e40af);
+      box-shadow: 0 0 12px rgba(59, 130, 246, 0.7);
+    }
+    
+   .filter-btn[data-filter="active"]::after {
+      background: radial-gradient(circle, #10b981, #059669);
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.7);
+    }
+    
+   .filter-btn[data-filter="launching"]::after {
+      background: radial-gradient(circle, #f59e0b, #d97706);
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.7);
+    }
+    
+   .filter-btn[data-filter="planned"]::after {
+      background: radial-gradient(circle, #ef4444, #dc2626);
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.7);
+    }
   </style>
 </head>
 <body>
@@ -363,6 +492,11 @@
       </button>
     </div>
   </div>
+
+  <!-- زر العودة إلى السعودية -->
+  <!-- <button id="return-to-saudi" class="return-to-saudi-btn">
+    🇸🇦 العودة إلى السعودية
+  </button> -->
 
   <!-- أدوات التحكم -->
   <!-- <div class="controls">
@@ -583,6 +717,13 @@
       return marker;
     }
 
+    // دالة العودة إلى السعودية
+    function returnToSaudiArabia() {
+      const saudiCenter = { lat: 23.8859, lng: 45.0792 };
+      map.setCenter(saudiCenter);
+      map.setZoom(6);
+    }
+
     function initMap() {
       console.log('بدء تهيئة الخريطة...');
       
@@ -674,20 +815,16 @@
         }
       };
 
-      const mapCenter = { lat: 25.7, lng: 45.3 };
+      // مركز السعودية كنقطة البداية
+    const mapCenter = { lat: 25.5, lng: 45.0792 };
+      
       map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 9,
+        zoom: 8, // زووم أولي محدث
         center: mapCenter,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
-        restriction: {
-          latLngBounds: {
-            north: 33.5,
-            south: 16.5,
-            west: 34.5,
-            east: 52.0
-          },
-          strictBounds: true
-        },
+        // إزالة القيود الجغرافية تماماً لتمكين الرؤية العالمية
+        minZoom: 1, // الحد الأدنى للزووم (رؤية عالمية)
+        maxZoom: 22, // الحد الأقصى للزووم (رؤية تفصيلية)
         styles: [
           {
             featureType: "poi",
@@ -717,6 +854,9 @@
           filterPlatforms(filter);
         });
       });
+
+      // إضافة event listener لزر العودة إلى السعودية
+      document.getElementById('return-to-saudi').addEventListener('click', returnToSaudiArabia);
     }
 
     function performSearch() {
