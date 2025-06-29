@@ -638,29 +638,10 @@
     // تحديث عدادات الأزرار (معطلة حالياً)
     function updateFilterCounts() {
       // الكود معطل لأن العدادات في HTML معلقة
-      console.log('العدادات معطلة حالياً');
-      
-      // إذا كنت تريد تفعيل العدادات، قم بإلغاء التعليق من HTML أولاً
-      /*
-      const counts = {
-        all: allLocations.length,
-        active: allLocations.filter(loc => loc.status === 'active').length,
-        launching: allLocations.filter(loc => loc.status === 'launching').length,
-        planned: allLocations.filter(loc => loc.status === 'planned').length
-      };
-
-      document.getElementById('count-all').textContent = counts.all;
-      document.getElementById('count-active').textContent = counts.active;
-      document.getElementById('count-launching').textContent = counts.launching;
-      document.getElementById('count-planned').textContent = counts.planned;
-
-      console.log('تم تحديث العدادات:', counts);
-      */
     }
 
     // تصفية المنصات حسب النوع
     function filterPlatforms(filter) {
-      console.log('تصفية المنصات حسب:', filter);
       
       // إخفاء جميع العلامات أولاً
       markers.forEach(marker => {
@@ -674,8 +655,6 @@
       } else {
         locationsToShow = allLocations.filter(location => location.status === filter);
       }
-      
-      console.log(`عدد المنصات المراد عرضها: ${locationsToShow.length}`);
       
       // إنشاء علامات جديدة للمواقع المفلترة
       markers = [];
@@ -691,8 +670,6 @@
       document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
       
       currentFilter = filter;
-      
-      console.log(`تم عرض ${markers.length} علامة على الخريطة`);
     }
 
     // إنشاء علامة واحدة
@@ -710,7 +687,6 @@
       });
 
       marker.addListener('click', function() {
-        console.log('تم النقر على:', location.name);
         showSidebar(location);
       });
 
@@ -725,7 +701,6 @@
     }
 
     function initMap() {
-      console.log('بدء تهيئة الخريطة...');
       
       // تحديد أيقونات الـ pins الجديدة بالتصميم المطور
       window.pinIcons = {
@@ -834,8 +809,6 @@
         ]
       });
 
-      console.log('عدد المواقع لإضافتها:', allLocations.length);
-
       // تحديث العدادات (تم إلغاؤها لأن العناصر معلقة)
       // updateFilterCounts();
 
@@ -844,8 +817,6 @@
         const marker = createMarker(location);
         markers.push(marker);
       });
-
-      console.log('تم إنشاء', markers.length, 'علامة على الخريطة');
 
       // إضافة event listeners للأزرار
       document.querySelectorAll('.filter-btn').forEach(button => {
@@ -923,7 +894,6 @@
     }
 
     function showSidebar(location) {
-      console.log('بدء فتح sidebar للموقع:', location.name);
       
       try {
         const statusInfo = getStatusInfo(location.status, location);
@@ -932,7 +902,6 @@
         const locationNameElement = document.getElementById('location-name');
         if (locationNameElement) {
           locationNameElement.textContent = location.name;
-          console.log('تم تعديل اسم الموقع');
         }
         
         const locationDetailsElement = document.getElementById('location-details');
@@ -945,7 +914,6 @@
         if (statusBadge) {
           statusBadge.textContent = statusInfo.text;
           statusBadge.className = 'status-badge ' + statusInfo.class;
-          console.log('تم تعديل شارة الحالة');
         }
         
         // إظهار الإحصائيات
@@ -998,7 +966,6 @@
               </p>
             `;
           }
-          console.log('تم تعديل الإحصائيات');
         }
         
         // إظهار رابط الزيارة أو إخفاؤه
@@ -1055,17 +1022,14 @@
         if (sidebar && mapElement) {
           sidebar.style.display = 'block';
           mapElement.style.width = '70%';
-          console.log('تم إظهار الـ sidebar وتغيير عرض الخريطة');
           
           // إعادة تحديد حجم الخريطة
           setTimeout(() => {
             google.maps.event.trigger(map, 'resize');
-            console.log('تم إعادة تحديد حجم الخريطة');
           }, 100);
         }
         
       } catch (error) {
-        console.error('خطأ في دالة showSidebar:', error);
         alert('حدث خطأ في عرض معلومات الموقع');
       }
     }
@@ -1089,11 +1053,9 @@
 
     // تهيئة الخريطة
     function initMapCallback() {
-      console.log('Google Maps API تم تحميلها بنجاح');
       if (typeof google !== 'undefined' && google.maps) {
         initMap();
       } else {
-        console.error('Google Maps API غير متاحة');
         setTimeout(initMapCallback, 1000);
       }
     }
