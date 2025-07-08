@@ -4,28 +4,10 @@
   <meta charset="UTF-8">
   <title>خريطة متاجر الحي</title>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSQwC16g8ZKoyVC2EpixPr0e-7IcPII14&libraries=places&callback=initMap" async defer></script>
-  
-  <!-- Firebase SDK v9 compat -->
+
+  <!-- Firebase SDK v9 -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  
-  <script>
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyD4eE_QSj8x5Yj9kvLLZvh2QNSUgovmGE4",
-      authDomain: "traders-data-live.firebaseapp.com",
-      projectId: "traders-data-live",
-      storageBucket: "traders-data-live.firebasestorage.app",
-      messagingSenderId: "1092144625333",
-      appId: "1:1092144625333:web:39041dca27c0b863b7f0fc"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    
-    console.log("🔥 Firebase initialized successfully!");
-  </script>
 
   <style>
       * {
@@ -474,8 +456,6 @@
 </head>
 <body>
 
-
-
   <!-- أزرار التحكم الجديدة -->
   <div class="map-controls">
     <div class="map-filters">
@@ -522,206 +502,187 @@
   </div>
 
   <script>
+    // إعداد Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAFCAV-C1B9gH7-F64MuZpdlcoGMhZK-_Y",
+      authDomain: "matajer-ebb39.firebaseapp.com",
+      projectId: "matajer-ebb39",
+      storageBucket: "matajer-ebb39.firebasestorage.app",
+      messagingSenderId: "88280903010",
+      appId: "1:88280903010:web:6a01c7ef50ef9b1c29903b",
+      measurementId: "G-2E7NR6FLHX"
+    };
+
+    // تهيئة Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
     let map, highlightCircle;
     let markers = [];
     let allLocations = []; // نسخة من جميع المواقع
     let currentFilter = 'all'; // الفلتر الحالي
-    let storeCountsCache = {}; // كاش للأعداد من Firebase
+    let firebaseData = {}; // تخزين بيانات Firebase
 
     const locations = [
-      // المنصات المطلقة (Active) - شيلنا الأرقام اليدوية
-      { lat: 20.6098, lng: 41.7462, name: 'القنفذة', link: 'https://qn1.matajeralhai.com/', status: 'active', image: '' },
-      { lat: 25.9758, lng: 43.5711, name: 'عيون الجواء', link: 'https://uj1.matajeralhai.com/', status: 'active', image: '' },
-      { lat: 25.8614, lng: 43.5711, name: 'عقلة الصقور', link: 'https://asq1.matajeralhai.com/', status: 'active', image: '' },
-      { lat: 17.1865, lng: 42.5923, name: 'صبيا', link: 'https://sby1.matajeralhai.com/', status: 'active', image: '' },
-      { lat: 25.8872, lng: 44.0256, name: 'المذنب', link: 'https://mzn1.matajeralhai.com/', status: 'active', image: '' },
-      { lat: 20.0129, lng: 41.4677, name: 'بلجرشي', link: 'https://blj1.matajeralhai.com/', status: 'active', image: '' },
-      { lat: 26.8906, lng: 44.6497, name: 'الزلفي', link: 'https://zl1.matajeralhai.com/', status: 'active', image: '' },
-      { lat: 25.2745, lng: 45.3825, name: 'الغاط', link: 'https://gt1.matajeralhai.com/', status: 'active', image: '' },
-      { lat: 25.7277, lng: 45.1645, name: 'رياض الخبراء', link: 'https://rkh1.matajeralhai.com/', status: 'active', image: '' },
-      { lat: 20.2196, lng: 40.3367, name: 'الليث', link: 'https://lt1.matajeralhai.com/', status: 'active', image: '' },
-      { lat: 27.5214, lng: 41.6900, name: 'حائل', link: 'https://ha1.matajeralhai.com/', status: 'active', image: '' },
-      { lat: 25.9084, lng: 45.3596, name: 'المجمعة', link: 'https://rydh7.matajeralhai.com/', status: 'active', image: '' },
-      { lat: 25.7605, lng: 45.3943, name: 'تمير', link: 'https://rydh5.matajeralhai.com/', status: 'active', image: '' },
-      { lat: 25.2951, lng: 46.4067, name: 'شقراء', link: 'https://rydh8.matajeralhai.com/', status: 'active', image: '' },
-      { lat: 25.5951, lng: 45.6338, name: 'سدير', link: 'https://rydh6.matajeralhai.com/', status: 'active', image: '' },
+      // المنصات المطلقة (Active) - الأرقام هتتحدث من Firebase أو تبقى 0
+      { lat: 20.6098, lng: 41.7462, name: 'القنفذة', link: 'https://qn1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 25.9758, lng: 43.5711, name: 'عيون الجواء', link: 'https://uj1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 25.8614, lng: 43.5711, name: 'عقلة الصقور', link: 'https://asq1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 17.1865, lng: 42.5923, name: 'صبيا', link: 'https://sby1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 25.8872, lng: 44.0256, name: 'المذنب', link: 'https://mzn1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 20.0129, lng: 41.4677, name: 'بلجرشي', link: 'https://blj1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 26.8906, lng: 44.6497, name: 'الزلفي', link: 'https://zl1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 25.2745, lng: 45.3825, name: 'الغاط', link: 'https://gt1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 25.7277, lng: 45.1645, name: 'رياض الخبراء', link: 'https://rkh1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 20.2196, lng: 40.3367, name: 'الليث', link: 'https://lt1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 27.5214, lng: 41.6900, name: 'حائل', link: 'https://ha1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 25.9084, lng: 45.3596, name: 'المجمعة', link: 'https://rydh7.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 25.7605, lng: 45.3943, name: 'تمير', link: 'https://rydh5.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 25.2951, lng: 46.4067, name: 'شقراء', link: 'https://rydh8.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 25.5951, lng: 45.6338, name: 'سدير', link: 'https://rydh6.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
       
       // جدة
-      { lat: 21.5454, lng: 39.2049, name: 'جدة / البشائر - الحمدانية', link: 'https://jed4.matajeralhai.com/', status: 'active', image: '' },
-      { lat: 21.5433, lng: 39.1728, name: 'جدة / الرياض - طيبة - أبحر', link: 'https://jed6.matajeralhai.com/', status: 'active', image: '' },
-      { lat: 21.6011, lng: 39.1802, name: 'جدة / النسيم - السليمانية', link: 'https://jed11.matajeralhai.com', status: 'active', image: '' },
-      { lat: 21.2854, lng: 39.2376, name: 'جدة / السنابل - الأجاويد', link: 'http://jed1.matajeralhai.com/', status: 'active', image: 'https://jed1.matajeralhai.com/Images/Photos/63f719b49e404dbb9a7217ded02fef23.webp' },
-      { lat: 21.5027, lng: 39.2433, name: 'جدة / الفضيلة - القرينية - الخمرة', link: 'https://jed5.matajeralhai.com/', status: 'active', image: '' },
-      { lat: 21.5752, lng: 39.2125, name: 'جدة / السامر', link: 'https://jed2.matajeralhai.com/', status: 'active', image: '' },
-      { lat: 21.6319, lng: 39.1225, name: 'جدة / النعيم - المحمدية - البساتين - المرجان', link: 'https://jed10.matajeralhai.com', status: 'active', image: '' },
+      { lat: 21.5454, lng: 39.2049, name: 'جدة / البشائر - الحمدانية', link: 'https://jed4.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 21.5433, lng: 39.1728, name: 'جدة / الرياض - طيبة - أبحر', link: 'https://jed6.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 21.6011, lng: 39.1802, name: 'جدة / النسيم - السليمانية', link: 'https://jed11.matajeralhai.com', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 21.2854, lng: 39.2376, name: 'جدة / السنابل - الأجاويد', link: 'http://jed1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: 'https://jed1.matajeralhai.com/Images/Photos/63f719b49e404dbb9a7217ded02fef23.webp' },
+      { lat: 21.5027, lng: 39.2433, name: 'جدة / الفضيلة - القرينية - الخمرة', link: 'https://jed5.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 21.5752, lng: 39.2125, name: 'جدة / السامر', link: 'https://jed2.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 21.6319, lng: 39.1225, name: 'جدة / النعيم - المحمدية - البساتين - المرجان', link: 'https://jed10.matajeralhai.com', status: 'active', storesCount: 0, offersCount: 0, image: '' },
       
       // المدينة المنورة
-      { lat: 24.4620, lng: 39.6120, name: 'المدينة المنورة / الدفاع', link: 'https://md1.matajeralhai.com/', status: 'active', image: '' },
-      { lat: 24.4740, lng: 39.6100, name: 'المدينة المنورة / العزيزية', link: 'https://md2.matajeralhai.com/', status: 'active', image: '' },
-      { lat: 24.4740, lng: 39.6100, name: 'المدينة المنورة / الخالدية', link: 'https://md3.matajeralhai.com/', status: 'active', image: '' },
-      { lat: 24.4680, lng: 39.6080, name: 'المدينة المنورة / السلام - الجماوات', link: 'https://md4.matajeralhai.com/', status: 'active', image: '' },
+      { lat: 24.4620, lng: 39.6120, name: 'المدينة المنورة / الدفاع', link: 'https://md1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 24.4740, lng: 39.6100, name: 'المدينة المنورة / العزيزية', link: 'https://md2.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 24.4740, lng: 39.6100, name: 'المدينة المنورة / الخالدية', link: 'https://md3.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 24.4680, lng: 39.6080, name: 'المدينة المنورة / السلام - الجماوات', link: 'https://md4.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
       
       // باقي المدن
-      { lat: 16.8894, lng: 42.5824, name: 'جيزان', link: 'https://jzn1.matajeralhai.com/', status: 'active', image: '' },
-      { lat: 20.0129, lng: 41.4677, name: 'الباحة', link: 'https://ba1.matajeralhai.com/', status: 'active', image: '' },
-      { lat: 18.2175, lng: 42.5058, name: 'أبها', link: 'https://ab1.matajeralhai.com/', status: 'active', image: '' },
+      { lat: 16.8894, lng: 42.5824, name: 'جيزان', link: 'https://jzn1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 20.0129, lng: 41.4677, name: 'الباحة', link: 'https://ba1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+      { lat: 18.2175, lng: 42.5058, name: 'أبها', link: 'https://ab1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
       
       // المنصات قيد التجهيز (Launching)
-      { lat: 26.1496, lng: 43.6397, name: 'البكيرية', link: 'https://bkr1.matajeralhai.com/', status: 'launching', launchProgress: 67, image: '' },
-      { lat: 25.0243, lng: 45.3072, name: 'جلاجل', link: 'https://jl1.matajeralhai.com/', status: 'launching', launchProgress: 54, image: '' },
-      { lat: 17.1282, lng: 42.4447, name: 'بيش', link: 'https://bi1.matajeralhai.com/', status: 'launching', launchProgress: 43, image: '' },
-      { lat: 24.4871, lng: 39.5679, name: 'الحناكية', link: 'https://hnk1.matajeralhai.com/', status: 'launching', launchProgress: 58, image: '' },
-      { lat: 25.9178, lng: 43.7036, name: 'البدائع', link: 'https://bda1.matajeralhai.com/', status: 'launching', launchProgress: 39, image: '' },
-      { lat: 20.1938, lng: 41.4710, name: 'المندق', link: 'https://mdq1.matajeralhai.com/', status: 'launching', launchProgress: 48, image: '' },
-      { lat: 24.7000, lng: 40.5000, name: 'القوارير', link: 'https://qw1.matajeralhai.com/', status: 'launching', launchProgress: 31, image: '' },
-      { lat: 20.8000, lng: 41.3000, name: 'بيدة', link: 'https://bid1.matajeralhai.com/', status: 'launching', launchProgress: 42, image: '' },
-      { lat: 27.0500, lng: 43.8000, name: 'قيا', link: 'https://qy1.matajeralhai.com/', status: 'launching', launchProgress: 36, image: '' },
-      { lat: 26.9000, lng: 43.2000, name: 'قرى', link: 'https://ko1.matajeralhai.com/', status: 'launching', launchProgress: 29, image: '' },
-      { lat: 24.8000, lng: 40.7000, name: 'الأطاولة', link: 'https://at1.matajeralhai.com/', status: 'launching', launchProgress: 52, image: '' }
+      { lat: 26.1496, lng: 43.6397, name: 'البكيرية', link: 'https://bkr1.matajeralhai.com/', status: 'launching', launchProgress: 67, storesCount: 0, offersCount: 0, image: '' },
+      { lat: 25.0243, lng: 45.3072, name: 'جلاجل', link: 'https://jl1.matajeralhai.com/', status: 'launching', launchProgress: 54, storesCount: 0, offersCount: 0, image: '' },
+      { lat: 17.1282, lng: 42.4447, name: 'بيش', link: 'https://bi1.matajeralhai.com/', status: 'launching', launchProgress: 43, storesCount: 0, offersCount: 0, image: '' },
+      { lat: 24.4871, lng: 39.5679, name: 'الحناكية', link: 'https://hnk1.matajeralhai.com/', status: 'launching', launchProgress: 58, storesCount: 0, offersCount: 0, image: '' },
+      { lat: 25.9178, lng: 43.7036, name: 'البدائع', link: 'https://bda1.matajeralhai.com/', status: 'launching', launchProgress: 39, storesCount: 0, offersCount: 0, image: '' },
+      { lat: 20.1938, lng: 41.4710, name: 'المندق', link: 'https://mdq1.matajeralhai.com/', status: 'launching', launchProgress: 48, storesCount: 0, offersCount: 0, image: '' },
+      { lat: 24.7000, lng: 40.5000, name: 'القوارير', link: 'https://qw1.matajeralhai.com/', status: 'launching', launchProgress: 31, storesCount: 0, offersCount: 0, image: '' },
+      { lat: 20.8000, lng: 41.3000, name: 'بيدة', link: 'https://bid1.matajeralhai.com/', status: 'launching', launchProgress: 42, storesCount: 0, offersCount: 0, image: '' },
+      { lat: 27.0500, lng: 43.8000, name: 'قيا', link: 'https://qy1.matajeralhai.com/', status: 'launching', launchProgress: 36, storesCount: 0, offersCount: 0, image: '' },
+      { lat: 26.9000, lng: 43.2000, name: 'قرى', link: 'https://ko1.matajeralhai.com/', status: 'launching', launchProgress: 29, storesCount: 0, offersCount: 0, image: '' },
+      { lat: 24.8000, lng: 40.7000, name: 'الأطاولة', link: 'https://at1.matajeralhai.com/', status: 'launching', launchProgress: 52, storesCount: 0, offersCount: 0, image: '' }
     ];
 
-    // دالة جلب الأعداد من Firebase
-    async function fetchStoreCountsFromFirebase() {
+    // نسخ البيانات
+    allLocations = [...locations];
+
+    // دالة جلب البيانات من Firebase
+    async function loadFirebaseData() {
       try {
-        console.log("🔥 بدء جلب البيانات من Firebase...");
+        console.log("🔥 جاري تحميل البيانات من Firebase...");
         
-        // التأكد من تحميل Firebase
-        if (!firebase || !firebase.firestore) {
-          console.error("❌ Firebase غير محمل!");
-          return;
-        }
-
-        console.log("✅ Firebase محمل بنجاح!");
-        console.log("✅ Firestore متاح!");
+        const snapshot = await db.collection('platforms').get();
         
-        // تجربة قراءة بسيطة أولاً
-        console.log("🧪 تجربة قراءة Collection...");
-        
-        try {
-          const testQuery = await db.collection('stores').limit(1).get();
-          console.log("📊 نتيجة تجربة القراءة:");
-          console.log("   - هل الاستعلام فارغ؟", testQuery.empty);
-          console.log("   - عدد المستندات:", testQuery.size);
-          
-          if (testQuery.empty) {
-            console.warn("⚠️ Collection 'stores' فارغ أو غير موجود!");
-            return;
-          }
-          
-        } catch (readError) {
-          console.error("❌ خطأ في قراءة البيانات:", readError);
-          console.error("❌ تفاصيل الخطأ:", readError.message);
-          return;
-        }
-        
-        // استخدام real-time listener
-        console.log("🔄 بدء الاستماع للتحديثات...");
-        
-        db.collection('stores').onSnapshot((querySnapshot) => {
-          console.log("📊 تحديث البيانات من Firebase...");
-          console.log("📊 عدد المستندات الكلي:", querySnapshot.size);
-          
-          if (querySnapshot.empty) {
-            console.warn("⚠️ لا توجد مستندات في Collection!");
-            return;
-          }
-          
-          // إعادة تعيين العدادات
-          storeCountsCache = {};
-          const foundInternalNames = new Set();
-          let processedDocs = 0;
-          
-          // حساب عدد المتاجر لكل منصة
-          querySnapshot.forEach((doc) => {
-            try {
-              const data = doc.data();
-              processedDocs++;
-              
-              // طباعة بنية البيانات لأول 3 مستندات للفهم
-              if (processedDocs <= 3) {
-                console.log(`🔍 مستند ${processedDocs} - ID: ${doc.id}`);
-                console.log("🔍 بنية البيانات:", data);
-                console.log("🔍 هل يوجد copy؟", !!data.copy);
-                if (data.copy) {
-                  console.log("🔍 محتوى copy:", data.copy);
-                  console.log("🔍 هل يوجد internalName؟", !!data.copy.internalName);
-                  if (data.copy.internalName) {
-                    console.log("🔍 قيمة internalName:", data.copy.internalName);
-                  }
-                }
-              }
-              
-              if (data.copy && data.copy.internalName) {
-                const internalName = data.copy.internalName;
-                foundInternalNames.add(internalName);
-                
-                console.log("✅ وُجد internalName:", internalName);
-                
-                // زيادة العدد للمنصة
-                if (storeCountsCache[internalName]) {
-                  storeCountsCache[internalName]++;
-                } else {
-                  storeCountsCache[internalName] = 1;
-                }
-              } else {
-                // طباعة المستندات التي لا تحتوي على البنية المطلوبة
-                if (processedDocs <= 5) { // اظهار اول 5 فقط
-                  console.log(`❌ مستند ${processedDocs} بدون copy.internalName:`, doc.id);
-                  console.log("   البيانات الموجودة:", Object.keys(data));
-                  if (data.copy) {
-                    console.log("   محتوى copy:", Object.keys(data.copy));
-                  }
-                }
-              }
-            } catch (error) {
-              console.error("خطأ في معالجة document:", doc.id, error);
-            }
+        if (!snapshot.empty) {
+          snapshot.forEach((doc) => {
+            const data = doc.data();
+            const platformId = doc.id;
+            
+            // حفظ البيانات في الكاش
+            firebaseData[platformId] = {
+              storesCount: data.storesCount || 0,
+              offersCount: data.offersCount || 0,
+              lastUpdated: data.lastUpdated
+            };
           });
-
-          console.log("📋 جميع الأسماء الداخلية الموجودة:", Array.from(foundInternalNames));
-          console.log("📈 الأعداد المحدثة:", storeCountsCache);
           
-          // طباعة أسماء المنصات في الكود للمقارنة
-          console.log("🗺️ أسماء المنصات في الكود:", allLocations.map(loc => loc.name));
+          console.log("✅ تم تحميل البيانات من Firebase:", firebaseData);
           
           // تحديث البيانات في المواقع
-          updateLocationStoresCounts();
+          updateLocationsWithFirebaseData();
           
-          // تحديث العدادات
-          updateFilterCounts();
-          
-          // إعادة رسم العلامات
-          redrawMarkers();
-          
-        }, (error) => {
-          console.error("❌ خطأ في الاستماع لتحديثات Firebase:", error);
-          console.error("❌ كود الخطأ:", error.code);
-          console.error("❌ رسالة الخطأ:", error.message);
-        });
-
+          // إعادة رسم العلامات إذا كانت الخريطة جاهزة
+          if (map) {
+            redrawMarkers();
+          }
+        } else {
+          console.log("⚠️ لا توجد بيانات في Firebase");
+        }
+        
       } catch (error) {
-        console.error("❌ خطأ في الاتصال بـ Firebase:", error);
-        console.error("❌ تفاصيل:", error.message);
+        console.error("❌ خطأ في تحميل البيانات من Firebase:", error);
       }
     }
 
-    // تحديث أعداد المتاجر في المواقع
-    function updateLocationStoresCounts() {
+    // دالة تحديث المواقع ببيانات Firebase
+    function updateLocationsWithFirebaseData() {
+      // ربط أسماء المنصات بـ IDs في Firebase
+      const platformMapping = {
+        'القنفذة': 'qnfudhah',
+        'عيون الجواء': 'uyun_aljawa',
+        'عقلة الصقور': 'aqlat_alsuqur',
+        'صبيا': 'sabya',
+        'المذنب': 'almudhannab',
+        'بلجرشي': 'baljurashi',
+        'الزلفي': 'alzulfi',
+        'الغاط': 'alghat',
+        'رياض الخبراء': 'riyadh_alkhabra',
+        'الليث': 'allayth',
+        'حائل': 'hail',
+        'المجمعة': 'almajmaah',
+        'تمير': 'tamir',
+        'شقراء': 'shaqra',
+        'سدير': 'sudair',
+        'جدة / البشائر - الحمدانية': 'jeddah_bashaer',
+        'جدة / الرياض - طيبة - أبحر': 'jeddah_riyadh',
+        'جدة / النسيم - السليمانية': 'jeddah_naseem',
+        'جدة / السنابل - الأجاويد': 'jeddah_sanabel',
+        'جدة / الفضيلة - القرينية - الخمرة': 'jeddah_fadila',
+        'جدة / السامر': 'jeddah_samer',
+        'جدة / النعيم - المحمدية - البساتين - المرجان': 'jeddah_naeem',
+        'المدينة المنورة / الدفاع': 'madinah_difa',
+        'المدينة المنورة / العزيزية': 'madinah_aziziya',
+        'المدينة المنورة / الخالدية': 'madinah_khalidiya',
+        'المدينة المنورة / السلام - الجماوات': 'madinah_salam',
+        'جيزان': 'jazan',
+        'الباحة': 'albaha',
+        'أبها': 'abha'
+      };
+
       allLocations.forEach(location => {
-        // البحث عن العدد في الكاش باستخدام اسم المنصة
-        const storeCount = storeCountsCache[location.name] || 0;
-        location.storesCount = storeCount;
+        const platformId = platformMapping[location.name];
         
-        console.log(`📍 ${location.name}: ${storeCount} متجر`);
+        if (platformId && firebaseData[platformId]) {
+          // تحديث البيانات من Firebase
+          location.storesCount = firebaseData[platformId].storesCount;
+          location.offersCount = firebaseData[platformId].offersCount;
+          location.lastUpdated = firebaseData[platformId].lastUpdated;
+          location.dataSource = 'firebase';
+          
+          console.log(`📊 تم تحديث ${location.name} من Firebase: ${location.storesCount} متجر، ${location.offersCount} عرض`);
+        } else {
+          // المنصات غير الموجودة في Firebase = أرقام 0
+          if (location.status === 'active') {
+            location.storesCount = 0;
+            location.offersCount = 0;
+            location.dataSource = 'default';
+            location.lastUpdated = null;
+            
+            console.log(`⚠️ ${location.name} غير موجودة في Firebase - استخدام أرقام افتراضية: 0`);
+          } else if (location.status === 'launching') {
+            // المنصات قيد الإطلاق تبقى 0 أصلاً
+            location.storesCount = 0;
+            location.offersCount = 0;
+            location.dataSource = 'launching';
+            location.lastUpdated = null;
+          }
+        }
       });
     }
 
-    // إخفاء مؤشر التحميل
-    function hideLoadingIndicator() {
-      // تم حذف مؤشر التحميل
-    }
-
-    // إعادة رسم العلامات
+    // دالة إعادة رسم العلامات
     function redrawMarkers() {
       // إخفاء العلامات الحالية
       markers.forEach(marker => marker.setMap(null));
@@ -731,8 +692,40 @@
       filterPlatforms(currentFilter);
     }
 
-    // نسخ البيانات
-    allLocations = [...locations];
+    // استمع للتحديثات المباشرة من Firebase
+    function setupFirebaseListener() {
+      db.collection('platforms').onSnapshot((snapshot) => {
+        console.log("🔄 تحديث مباشر من Firebase...");
+        
+        snapshot.docChanges().forEach((change) => {
+          const platformId = change.doc.id;
+          const data = change.doc.data();
+          
+          if (change.type === 'added' || change.type === 'modified') {
+            firebaseData[platformId] = {
+              storesCount: data.storesCount || 0,
+              offersCount: data.offersCount || 0,
+              lastUpdated: data.lastUpdated
+            };
+            
+            console.log(`📈 تم تحديث ${platformId}: ${data.storesCount} متجر، ${data.offersCount} عرض`);
+          }
+          
+          if (change.type === 'removed') {
+            delete firebaseData[platformId];
+            console.log(`🗑️ تم حذف ${platformId}`);
+          }
+        });
+        
+        // تحديث المواقع وإعادة الرسم
+        updateLocationsWithFirebaseData();
+        if (map) {
+          redrawMarkers();
+        }
+      }, (error) => {
+        console.error("❌ خطأ في الاستماع لتحديثات Firebase:", error);
+      });
+    }
 
     function getStatusInfo(status, location) {
       switch(status) {
@@ -905,8 +898,11 @@
         ]
       });
 
-      // بدء جلب البيانات من Firebase
-      fetchStoreCountsFromFirebase();
+      // تحميل بيانات Firebase عند بدء التطبيق
+      loadFirebaseData();
+      
+      // إعداد الاستماع للتحديثات المباشرة
+      setupFirebaseListener();
 
       // تحديث العدادات
       updateFilterCounts();
@@ -953,20 +949,46 @@
         const statsContainer = document.getElementById('stats-container');
         if (statsContainer) {
           if (location.status === 'active') {
-            // استخدام البيانات الحقيقية من Firebase
-            const realStoreCount = location.storesCount || 0;
+            // استخدام البيانات المحدثة من Firebase أو 0 للمنصات غير المدخلة
+            const storesCount = location.storesCount || 0;
+            const offersCount = location.offersCount || 0;
+            const lastUpdated = location.lastUpdated;
+            const dataSource = location.dataSource || 'default';
+            
+            let updateInfo = '';
+            let dataSourceInfo = '';
+            
+            // if (dataSource === 'firebase' && lastUpdated) {
+            //   const updateDate = new Date(lastUpdated.seconds * 1000);
+            //   updateInfo = `<div class="stat-item">
+            //     <span>آخر تحديث:</span>
+            //     <strong style="color: #666; font-size: 12px;">${updateDate.toLocaleDateString('ar-SA')}</strong>
+            //   </div>`;
+            //   dataSourceInfo = `<div style="margin-top: 10px; padding: 8px; background: rgba(34, 197, 94, 0.1); border-radius: 6px; font-size: 12px; color: #059669;">
+            //     <i class="fas fa-database"></i> البيانات محدثة من لوحة التحكم
+            //   </div>`;
+            // } else if (dataSource === 'default') {
+            //   dataSourceInfo = `<div style="margin-top: 10px; padding: 8px; background: rgba(255, 193, 7, 0.1); border-radius: 6px; font-size: 12px; color: #856404;">
+            //     <i class="fas fa-exclamation-triangle"></i> لم يتم إدخال البيانات في لوحة التحكم بعد
+            //   </div>`;
+            // }
             
             statsContainer.innerHTML = `
               <h4 style="margin: 0 0 10px 0; color: #2c3e50;">📊 إحصائيات المنصة</h4>
               <div class="stat-item">
                 <span>عدد المتاجر:</span>
-                <strong style="color: #22c55e;">${realStoreCount} متجر</strong>
+                <strong style="color: ${storesCount > 0 ? '#22c55e' : '#999'};">${storesCount} متجر</strong>
               </div>
-            
+              <div class="stat-item">
+                <span>عدد العروض:</span>
+                <strong style="color: ${offersCount > 0 ? '#ea9c57' : '#999'};">${offersCount} عرض</strong>
+              </div>
               <div class="stat-item">
                 <span>الحالة:</span>
                 <strong style="color: #22c55e;">متاحة الآن ✓</strong>
               </div>
+              ${updateInfo}
+              ${dataSourceInfo}
             `;
           } else if (location.status === 'launching') {
             statsContainer.innerHTML = `
@@ -978,6 +1000,10 @@
               <div class="stat-item">
                 <span>الحالة:</span>
                 <strong style="color: #ea9c57;">جاري العمل عليها</strong>
+              </div>
+              <div class="stat-item">
+                <span>المتاجر المتوقعة:</span>
+                <strong style="color: #666;">قريباً</strong>
               </div>
               <p style="margin: 10px 0; color: #666; font-size: 14px;">
                 نعمل بجد لإطلاق هذه المنصة قريباً. سنبلغك فور توفرها!
@@ -1015,7 +1041,8 @@
         
         if (location.status === 'active' && location.link) {
           shareMessage += `🔗 زيارة المنصة: ${location.link}\n`;
-          shareMessage += `🏬 المتاجر: ${location.storesCount || 0} (Live من Firebase)\n`;
+          shareMessage += `🏬 المتاجر: ${location.storesCount || 0} متجر\n`;
+          shareMessage += `🎯 العروض: ${location.offersCount || 0} عرض\n`;
         } else if (location.status === 'launching') {
           shareMessage += `⏳ التقدم: ${location.launchProgress || 0}%\n`;
         }
