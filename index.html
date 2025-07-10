@@ -317,6 +317,16 @@
       background: linear-gradient(135deg, #d18a46 0%, #b8763a 100%);
     }
 
+.custom-fs-btn{
+  background:#fff;
+  border:2px solid #e2e8f0;
+  border-radius:6px;
+  padding:8px 12px;
+  font-size:14px;
+  cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+.custom-fs-btn:hover{background:#f7fafc}
 
     
     @media (max-width: 768px) {
@@ -456,7 +466,7 @@
 </head>
 <body>
 
-  <!-- أزرار التحكم الجديدة -->
+    <!-- أزرار التحكم الجديدة -->
   <div class="map-controls">
     <div class="map-filters">
       <button class="filter-btn active" data-filter="all">
@@ -475,6 +485,7 @@
       </button>
     </div>
   </div>
+<div id="map-wrapper" class="map-wrapper">
 
   <!-- الخريطة -->
   <div id="map"></div>
@@ -504,7 +515,7 @@
       </a>
     </div>
   </div>
-
+</div>
   <script>
     // إعداد Firebase
     const firebaseConfig = {
@@ -901,6 +912,26 @@
           }
         ]
       });
+      map.setOptions({ fullscreenControl: false });
+const mapWrapper = document.getElementById('map-wrapper');   // الحاوية الجديدة
+
+// إنشاء زر
+const fsBtn = document.createElement('button');
+fsBtn.className  = 'custom-fs-btn';
+fsBtn.textContent = '⤢';
+
+// طلب / إلغاء ملء الشاشة
+fsBtn.onclick = () => {
+  if (!document.fullscreenElement) {
+    mapWrapper.requestFullscreen();          // ← هذا هو السطر الذى سألت عنه
+  } else {
+    document.exitFullscreen();
+  }
+};
+
+// وضع الزر أعلى يمين الخريطة
+map.controls[google.maps.ControlPosition.TOP_RIGHT].push(fsBtn);
+
 
       // تحميل بيانات Firebase عند بدء التطبيق
       loadFirebaseData();
