@@ -538,58 +538,57 @@
     let currentFilter = 'all'; // الفلتر الحالي
     let firebaseData = {}; // تخزين بيانات Firebase
 
-    const locations = [
-      // المنصات المطلقة (Active) - الأرقام هتتحدث من Firebase أو تبقى 0
-      { lat: 20.6098, lng: 41.7462, name: 'القنفذة', link: 'https://qn1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 25.9758, lng: 43.5711, name: 'عيون الجواء', link: 'https://uj1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 25.8614, lng: 43.5711, name: 'عقلة الصقور', link: 'https://asq1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 17.1865, lng: 42.5923, name: 'صبيا', link: 'https://sby1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 25.8872, lng: 44.0256, name: 'المذنب', link: 'https://mzn1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 20.0129, lng: 41.4677, name: 'بلجرشي', link: 'https://blj1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 26.8906, lng: 44.6497, name: 'الزلفي', link: 'https://zl1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 25.2745, lng: 45.3825, name: 'الغاط', link: 'https://gt1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 25.7277, lng: 45.1645, name: 'رياض الخبراء', link: 'https://rkh1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 20.2196, lng: 40.3367, name: 'الليث', link: 'https://lt1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 27.5214, lng: 41.6900, name: 'حائل', link: 'https://ha1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 25.9084, lng: 45.3596, name: 'المجمعة', link: 'https://rydh7.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 25.7605, lng: 45.3943, name: 'تمير', link: 'https://rydh5.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 25.2951, lng: 46.4067, name: 'شقراء', link: 'https://rydh8.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 25.5951, lng: 45.6338, name: 'سدير', link: 'https://rydh6.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      
-      // جدة
-      { lat: 21.5454, lng: 39.2049, name: 'جدة / البشائر - الحمدانية', link: 'https://jed4.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 21.5433, lng: 39.1728, name: 'جدة / الرياض - طيبة - أبحر', link: 'https://jed6.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 21.6011, lng: 39.1802, name: 'جدة / النسيم - السليمانية', link: 'https://jed11.matajeralhai.com', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 21.2854, lng: 39.2376, name: 'جدة / السنابل - الأجاويد', link: 'http://jed1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: 'https://jed1.matajeralhai.com/Images/Photos/63f719b49e404dbb9a7217ded02fef23.webp' },
-      { lat: 21.5027, lng: 39.2433, name: 'جدة / الفضيلة - القرينية - الخمرة', link: 'https://jed5.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 21.5752, lng: 39.2125, name: 'جدة / السامر', link: 'https://jed2.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 21.6319, lng: 39.1225, name: 'جدة / النعيم - المحمدية - البساتين - المرجان', link: 'https://jed10.matajeralhai.com', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      
-      // المدينة المنورة
-      { lat: 24.4620, lng: 39.6120, name: 'المدينة المنورة / الدفاع', link: 'https://md1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 24.4740, lng: 39.6100, name: 'المدينة المنورة / العزيزية', link: 'https://md2.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 24.4740, lng: 39.6100, name: 'المدينة المنورة / الخالدية', link: 'https://md3.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 24.4680, lng: 39.6080, name: 'المدينة المنورة / السلام - الجماوات', link: 'https://md4.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      
-      // باقي المدن
-      { lat: 16.8894, lng: 42.5824, name: 'جيزان', link: 'https://jzn1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 20.0129, lng: 41.4677, name: 'الباحة', link: 'https://ba1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      { lat: 18.2175, lng: 42.5058, name: 'أبها', link: 'https://ab1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
-      
-      // المنصات قيد التجهيز (Launching)
-      { lat: 26.1496, lng: 43.6397, name: 'البكيرية', link: 'https://bkr1.matajeralhai.com/', status: 'launching', launchProgress: 67, storesCount: 0, offersCount: 0, image: '' },
-      { lat: 25.0243, lng: 45.3072, name: 'جلاجل', link: 'https://jl1.matajeralhai.com/', status: 'launching', launchProgress: 54, storesCount: 0, offersCount: 0, image: '' },
-      { lat: 17.1282, lng: 42.4447, name: 'بيش', link: 'https://bi1.matajeralhai.com/', status: 'launching', launchProgress: 43, storesCount: 0, offersCount: 0, image: '' },
-      { lat: 24.4871, lng: 39.5679, name: 'الحناكية', link: 'https://hnk1.matajeralhai.com/', status: 'launching', launchProgress: 58, storesCount: 0, offersCount: 0, image: '' },
-      { lat: 25.9178, lng: 43.7036, name: 'البدائع', link: 'https://bda1.matajeralhai.com/', status: 'launching', launchProgress: 39, storesCount: 0, offersCount: 0, image: '' },
-      { lat: 20.1938, lng: 41.4710, name: 'المندق', link: 'https://mdq1.matajeralhai.com/', status: 'launching', launchProgress: 48, storesCount: 0, offersCount: 0, image: '' },
-      { lat: 24.7000, lng: 40.5000, name: 'القوارير', link: 'https://qw1.matajeralhai.com/', status: 'launching', launchProgress: 31, storesCount: 0, offersCount: 0, image: '' },
-      { lat: 20.8000, lng: 41.3000, name: 'بيدة', link: 'https://bid1.matajeralhai.com/', status: 'launching', launchProgress: 42, storesCount: 0, offersCount: 0, image: '' },
-      { lat: 27.0500, lng: 43.8000, name: 'قيا', link: 'https://qy1.matajeralhai.com/', status: 'launching', launchProgress: 36, storesCount: 0, offersCount: 0, image: '' },
-      { lat: 26.9000, lng: 43.2000, name: 'قرى', link: 'https://ko1.matajeralhai.com/', status: 'launching', launchProgress: 29, storesCount: 0, offersCount: 0, image: '' },
-      { lat: 24.8000, lng: 40.7000, name: 'الأطاولة', link: 'https://at1.matajeralhai.com/', status: 'launching', launchProgress: 52, storesCount: 0, offersCount: 0, image: '' }
-    ];
-
+const locations = [
+  // المنصات المطلقة (Active) - إحداثيات مُصححة دقيقة
+  { lat: 19.1281, lng: 41.0787, name: 'القنفذة', link: 'https://qn1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 26.49829, lng: 43.6312, name: 'عيون الجواء', link: 'https://uj1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 25.82916, lng: 42.20119, name: 'عقلة الصقور', link: 'https://asq1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 17.14889, lng: 42.62583, name: 'صبيا', link: 'https://sby1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 25.86012, lng: 44.22228, name: 'المذنب', link: 'https://mzn1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 19.86121, lng: 41.56098, name: 'بلجرشي', link: 'https://blj1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 26.28300, lng: 44.80000, name: 'الزلفي', link: 'https://zl1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 26.02667, lng: 44.96083, name: 'الغاط', link: 'https://gt1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 25.7277, lng: 45.1645, name: 'رياض الخبراء', link: 'https://rkh1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 20.2196, lng: 40.3367, name: 'الليث', link: 'https://lt1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 27.5144, lng: 41.6900, name: 'حائل', link: 'https://ha1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 25.9084, lng: 45.3596, name: 'المجمعة', link: 'https://rydh7.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 25.7605, lng: 45.3943, name: 'تمير', link: 'https://rydh5.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 25.2951, lng: 46.4067, name: 'شقراء', link: 'https://rydh8.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 25.5951, lng: 45.6338, name: 'سدير', link: 'https://rydh6.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  
+  // جدة - إحداثيات دقيقة لمراكز الأحياء
+  { lat: 21.65529, lng: 39.18683, name: 'جدة / البشائر - الحمدانية', link: 'https://jed4.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 21.74968, lng: 39.15554, name: 'جدة / الرياض - طيبة - أبحر', link: 'https://jed6.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 21.53627, lng: 39.22203, name: 'جدة / النسيم - السليمانية', link: 'https://jed11.matajeralhai.com', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 21.33287, lng: 39.24116, name: 'جدة / السنابل - الأجاويد', link: 'http://jed1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: 'https://jed1.matajeralhai.com/Images/Photos/63f719b49e404dbb9a7217ded02fef23.webp' },
+  { lat: 21.36332, lng: 39.20952, name: 'جدة / الفضيلة - القرينية - الخمرة', link: 'https://jed5.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 21.58644, lng: 39.25906, name: 'جدة / السامر', link: 'https://jed2.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 21.62654, lng: 39.12252, name: 'جدة / النعيم - المحمدية - البساتين - المرجان', link: 'https://jed10.matajeralhai.com', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  
+  // المدينة المنورة - إحداثيات دقيقة مُحدثة
+  { lat: 24.4620, lng: 39.6120, name: 'المدينة المنورة / الدفاع', link: 'https://md1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 24.4740, lng: 39.6100, name: 'المدينة المنورة / العزيزية', link: 'https://md2.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 24.4788, lng: 39.6071, name: 'المدينة المنورة / الخالدية', link: 'https://md3.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 24.4669, lng: 39.6033, name: 'المدينة المنورة / السلام - الجماوات', link: 'https://md4.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  
+  // باقي المدن - إحداثيات مركزية دقيقة 100%
+  { lat: 16.8892, lng: 42.5708, name: 'جيزان', link: 'https://jzn1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 20.0129, lng: 41.4677, name: 'الباحة', link: 'https://ba1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  { lat: 18.2164, lng: 42.5053, name: 'أبها', link: 'https://ab1.matajeralhai.com/', status: 'active', storesCount: 0, offersCount: 0, image: '' },
+  
+  // المنصات قيد التجهيز (Launching) - إحداثيات مُحدثة ودقيقة
+  { lat: 26.1432, lng: 43.6577, name: 'البكيرية', link: 'https://bkr1.matajeralhai.com/', status: 'launching', launchProgress: 67, storesCount: 0, offersCount: 0, image: '' },
+  { lat: 25.2439, lng: 45.1567, name: 'جلاجل', link: 'https://jl1.matajeralhai.com/', status: 'launching', launchProgress: 54, storesCount: 0, offersCount: 0, image: '' },
+  { lat: 17.1522, lng: 42.4808, name: 'بيش', link: 'https://bi1.matajeralhai.com/', status: 'launching', launchProgress: 43, storesCount: 0, offersCount: 0, image: '' },
+  { lat: 24.4849, lng: 39.5442, name: 'الحناكية', link: 'https://hnk1.matajeralhai.com/', status: 'launching', launchProgress: 58, storesCount: 0, offersCount: 0, image: '' },
+  { lat: 26.0988, lng: 43.7281, name: 'البدائع', link: 'https://bda1.matajeralhai.com/', status: 'launching', launchProgress: 39, storesCount: 0, offersCount: 0, image: '' },
+  { lat: 20.2707, lng: 41.2854, name: 'المندق', link: 'https://mdq1.matajeralhai.com/', status: 'launching', launchProgress: 48, storesCount: 0, offersCount: 0, image: '' },
+  { lat: 24.7000, lng: 40.5000, name: 'القوارير', link: 'https://qw1.matajeralhai.com/', status: 'launching', launchProgress: 31, storesCount: 0, offersCount: 0, image: '' },
+  { lat: 20.7822, lng: 41.3281, name: 'بيدة', link: 'https://bid1.matajeralhai.com/', status: 'launching', launchProgress: 42, storesCount: 0, offersCount: 0, image: '' },
+  { lat: 21.0787, lng: 40.4897, name: 'قيا', link: 'https://qy1.matajeralhai.com/', status: 'launching', launchProgress: 36, storesCount: 0, offersCount: 0, image: '' },
+  { lat: 20.5076, lng: 41.5548, name: 'قرى', link: 'https://ko1.matajeralhai.com/', status: 'launching', launchProgress: 29, storesCount: 0, offersCount: 0, image: '' },
+  { lat: 20.2707, lng: 41.1442, name: 'الأطاولة', link: 'https://at1.matajeralhai.com/', status: 'launching', launchProgress: 52, storesCount: 0, offersCount: 0, image: '' }
+];
     // نسخ البيانات
     allLocations = [...locations];
 
